@@ -23,9 +23,10 @@ public class Taxes {
     @SerializedName("cdi_daily")
     private Double cdiDaily;
 
-    public Taxes() { }
+    public Taxes() { super(); }
 
     public Taxes(String date, Double cdi, Double selic, Double dailyFactor, Double selicDaily, Double cdiDaily){
+        super();
         this.date = date;
         this.cdi = cdi;
         this.selic = selic;

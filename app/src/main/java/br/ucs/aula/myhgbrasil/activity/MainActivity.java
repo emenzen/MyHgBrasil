@@ -17,6 +17,10 @@ import java.util.List;
 import br.ucs.aula.myhgbrasil.R;
 import br.ucs.aula.myhgbrasil.adapter.TaxesAdapter;
 import br.ucs.aula.myhgbrasil.banco.BDSQLiteHelper;
+import br.ucs.aula.myhgbrasil.model.Geoip;
+import br.ucs.aula.myhgbrasil.model.GeoipResponse;
+import br.ucs.aula.myhgbrasil.model.Geoip;
+import br.ucs.aula.myhgbrasil.model.GeoipResponse;
 import br.ucs.aula.myhgbrasil.model.Taxes;
 import br.ucs.aula.myhgbrasil.model.TaxesResponse;
 import br.ucs.aula.myhgbrasil.rest.ApiHgBrasil;
@@ -31,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private BDSQLiteHelper bd;
     private final static String API_KEY = "3c8e5da5";
+    private final static String API_ADDRESS = "remote";
     private static final String TAG = MainActivity.class.getSimpleName();
 
     @Override
@@ -97,6 +102,22 @@ public class MainActivity extends AppCompatActivity {
             public void onFailure(Call<TaxesResponse> call, Throwable t) {
                 // Log error here since request failed
                 Log.e(TAG, t.toString());
+            }
+        });
+
+        //Busca a localização....
+        final Geoip geoip = new Geoip();
+        Call<GeoipResponse> call1 = apiService.getGeoip(API_KEY,API_ADDRESS);
+        call1.enqueue(new Callback<GeoipResponse>() {
+            @Override
+            public void onResponse(Call<GeoipResponse> call, Response<GeoipResponse> response) {
+                int statusCode = response.code();
+                Geoip geoip = response.body().getResults();
+            }
+
+            @Override
+            public void onFailure(Call<GeoipResponse> call, Throwable t) {
+
             }
         });
 

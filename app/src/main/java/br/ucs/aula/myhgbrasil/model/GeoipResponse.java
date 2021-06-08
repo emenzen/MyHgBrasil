@@ -1,23 +1,22 @@
 package br.ucs.aula.myhgbrasil.model;
+
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
-public class TaxesResponse {
+public class GeoipResponse {
     @SerializedName("by")
     private String by;
     @SerializedName("valid_key")
     private Boolean validKey;
     @SerializedName("results")
-    private List<Taxes> results = null;
+    private Geoip results;
     @SerializedName("execution_time")
     private Double executionTime;
     @SerializedName("from_cache")
     private Boolean fromCache;
 
-    public TaxesResponse() { super(); }
+    public GeoipResponse() { super(); }
 
-    public TaxesResponse(String by, Boolean validKey, List<Taxes> results, Double executionTime, Boolean fromCache) {
+    public GeoipResponse(String by, Boolean validKey, Geoip results, Double executionTime, Boolean fromCache) {
         super();
         this.by = by;
         this.validKey = validKey;
@@ -42,11 +41,11 @@ public class TaxesResponse {
         this.validKey = validKey;
     }
 
-    public List<Taxes> getResults() {
+    public Geoip getResults() {
         return results;
     }
 
-    public void setResults(List<Taxes> results) {
+    public void setResults(Geoip results) {
         this.results = results;
     }
 
