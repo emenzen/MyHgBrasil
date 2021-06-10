@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class Bitcoin {
+    private String id;
     @SerializedName("name")
     private String name;
     @SerializedName("format")
@@ -31,6 +32,9 @@ public class Bitcoin {
         this.sell = sell;
         this.variation = variation;
     }
+    public String getId() {return  id;}
+
+    public  void  setId(String id) {this.id = id;}
 
     public String getName() {
         return name;

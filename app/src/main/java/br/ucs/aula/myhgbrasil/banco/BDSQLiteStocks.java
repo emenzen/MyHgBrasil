@@ -19,12 +19,12 @@ public class BDSQLiteStocks extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "MyHgBrasil";
     private static final String TABELA_STOCKS = "stocks";
-    private static final String KEY = "key";
+    private static final String ID = "id";
     private static final String NAME = "name";
     private static final String LOCATION = "location";
     private static final String POINTS = "points";
     private static final String VARIATION = "variation";
-    private static final String[] COLUNAS = {KEY, NAME, LOCATION, POINTS, VARIATION};
+    private static final String[] COLUNAS = {ID, NAME, LOCATION, POINTS, VARIATION};
 
     public BDSQLiteStocks(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -33,7 +33,7 @@ public class BDSQLiteStocks extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_TABLE = "CREATE TABLE stocks ("+
-                "key TEXT,"+
+                "id TEXT,"+
                 "name TEXT,"+
                 "location TEXT,"+
                 "points REAL,"+
@@ -48,10 +48,10 @@ public class BDSQLiteStocks extends SQLiteOpenHelper {
         this.onCreate(db);
     }
 
-    public void addStocks(String key, Stocks stocks) {
+    public void addStocks(String id, Stocks stocks) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(KEY, key);
+        values.put(ID, id);
         values.put(NAME, stocks.getName());
         values.put(LOCATION, stocks.getLocation());
         values.put(POINTS, stocks.getPoints());
@@ -63,24 +63,24 @@ public class BDSQLiteStocks extends SQLiteOpenHelper {
     public void addStocks(Map<String,Stocks> stocksMap) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        Set<String> keys = stocksMap.keySet();
-        for(String key : keys){
-            values.put(KEY, key);
-            values.put(NAME, stocksMap.get(key).getName());
-            values.put(LOCATION, stocksMap.get(key).getLocation());
-            values.put(POINTS, stocksMap.get(key).getPoints());
-            values.put(VARIATION, stocksMap.get(key).getVariation());
+        Set<String> ids = stocksMap.keySet();
+        for(String id : ids){
+            values.put(ID, id);
+            values.put(NAME, stocksMap.get(id).getName());
+            values.put(LOCATION, stocksMap.get(id).getLocation());
+            values.put(POINTS, stocksMap.get(id).getPoints());
+            values.put(VARIATION, stocksMap.get(id).getVariation());
             db.insert(TABELA_STOCKS, null, values);
         }
         db.close();
     }
 
 
-    public int deleteStocks(String key) {
+    public int deleteStocks(String id) {
         SQLiteDatabase db = this.getWritableDatabase();
         int i = db.delete(TABELA_STOCKS, //tabela
-                KEY+" = ?", // colunas para comparar
-                new String[] { key });
+                ID +" = ?", // colunas para comparar
+                new String[] { id });
         db.close();
         return i; // número de linhas excluídas
     }
@@ -94,7 +94,7 @@ public class BDSQLiteStocks extends SQLiteOpenHelper {
     public int updateStocks(Stocks stocks) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(KEY, stocks.getKey());
+        values.put(ID, stocks.getId());
         values.put(NAME, stocks.getName());
         values.put(LOCATION, stocks.getLocation());
         values.put(POINTS, stocks.getPoints());
@@ -102,15 +102,15 @@ public class BDSQLiteStocks extends SQLiteOpenHelper {
 
         int i = db.update(TABELA_STOCKS, //tabela
                 values, // valores
-                KEY+" = ?", // colunas para comparar
-                new String[] { stocks.getKey() }); //parâmetros
+                ID +" = ?", // colunas para comparar
+                new String[] { stocks.getId() }); //parâmetros
         db.close();
         return i; // número de linhas modificadas
     }
 
     private Stocks cursorToStocks(Cursor cursor) {
         Stocks stocks = new Stocks();
-        stocks.setKey(cursor.getString(0));
+        stocks.setId(cursor.getString(0));
         stocks.setName(cursor.getString(1));
         stocks.setLocation(cursor.getString(2));
         stocks.setPoints(Double.parseDouble(cursor.getString(3)));

@@ -94,6 +94,10 @@ public class MainActivity extends AppCompatActivity {
                 int statusCode = response.code();
                 List<Taxes> taxesList = response.body().getResults();
                 taxesList.add(new Taxes("2025-05-14",2.0,3.0,4.0,5.6,6.9));
+                taxesList.add(new Taxes("2025-05-14",2.0,3.0,4.0,5.6,6.9));
+                taxesList.add(new Taxes("2025-05-14",2.0,3.0,4.0,5.6,6.9));
+                taxesList.add(new Taxes("2025-05-14",2.0,3.0,4.0,5.6,6.9));
+                taxesList.add(new Taxes("2025-05-14",2.0,3.0,4.0,5.6,6.9));
                 //recyclerView.setAdapter(new TaxesAdapter(taxesList, R.layout.list_taxes, getApplicationContext()));
 
                 bd.deleteAllTaxes();
