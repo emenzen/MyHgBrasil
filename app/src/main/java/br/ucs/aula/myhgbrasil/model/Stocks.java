@@ -3,55 +3,55 @@ package br.ucs.aula.myhgbrasil.model;
 import com.google.gson.annotations.SerializedName;
 
 public class Stocks {
-    @SerializedName("IBOVESPA")
-    private Stock ibovespa;
-    @SerializedName("NASDAQ")
-    private Stock nasdaq;
-    @SerializedName("CAC")
-    private Stock cac;
-    @SerializedName("NIKKEI")
-    private Stock nikkei;
+    @SerializedName("name")
+    private String name;
+    @SerializedName("location")
+    private String location;
+    @SerializedName("points")
+    private Double points;
+    @SerializedName("variation")
+    private Double variation;
 
     public Stocks() {
     }
 
-    public Stocks(Stock ibovespa, Stock nasdaq, Stock cac, Stock nikkei) {
+    public Stocks(String name, String location, Double points, Double variation) {
         super();
-        this.ibovespa = ibovespa;
-        this.nasdaq = nasdaq;
-        this.cac = cac;
-        this.nikkei = nikkei;
+        this.name = name;
+        this.location = location;
+        this.points = points;
+        this.variation = variation;
     }
 
-    public Stock getIbovespa() {
-        return ibovespa;
+    public String getName() {
+        return name;
     }
 
-    public void setIbovespa(Stock ibovespa) {
-        this.ibovespa = ibovespa;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public Stock getNasdaq() {
-        return nasdaq;
+    public String getLocation() {
+        return location;
     }
 
-    public void setNasdaq(Stock nasdaq) {
-        this.nasdaq = nasdaq;
+    public void setLocation(String location) {
+        this.location = location;
     }
 
-    public Stock getCac() {
-        return cac;
+    public Double getPoints() {
+        return points;
     }
 
-    public void setCac(Stock cac) {
-        this.cac = cac;
+    public void setPoints(Double points) {
+        this.points = points;
     }
 
-    public Stock getNikkei() {
-        return nikkei;
+    public Double getVariation() {
+        return variation;
     }
 
-    public void setNikkei(Stock nikkei) {
-        this.nikkei = nikkei;
+    public void setVariation(Double variation) {
+        this.variation = variation;
     }
 }

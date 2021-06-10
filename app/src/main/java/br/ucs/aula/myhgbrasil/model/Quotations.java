@@ -3,21 +3,22 @@ package br.ucs.aula.myhgbrasil.model;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
+import java.util.Map;
 
 public class Quotations {
     @SerializedName("currencies")
-    private Currencies currencies;
+    private Map<String,?> currencies;
     @SerializedName("stocks")
-    private Stocks stocks;
+    private Map<String,Stocks> stocks;
     @SerializedName("available_sources")
     private List<String> availableSources = null;
     @SerializedName("bitcoin")
-    private Bitcoin bitcoin;
+    private Map<String,Bitcoin> bitcoin;
 
     public Quotations() {
     }
 
-    public Quotations(Currencies currencies, Stocks stocks, List<String> availableSources, Bitcoin bitcoin) {
+    public Quotations(Map<String,?> currencies, Map<String,Stocks> stocks, List<String> availableSources, Map<String,Bitcoin> bitcoin) {
         super();
         this.currencies = currencies;
         this.stocks = stocks;
@@ -25,19 +26,19 @@ public class Quotations {
         this.bitcoin = bitcoin;
     }
 
-    public Currencies getCurrencies() {
+    public Map<String,?> getCurrencies() {
         return currencies;
     }
 
-    public void setCurrencies(Currencies currencies) {
+    public void setCurrencies(Map<String,?> currencies) {
         this.currencies = currencies;
     }
 
-    public Stocks getStocks() {
+    public Map<String,Stocks> getStocks() {
         return stocks;
     }
 
-    public void setStocks(Stocks stocks) {
+    public void setStocks(Map<String,Stocks> stocks) {
         this.stocks = stocks;
     }
 
@@ -49,11 +50,11 @@ public class Quotations {
         this.availableSources = availableSources;
     }
 
-    public Bitcoin getBitcoin() {
+    public Map<String,Bitcoin> getBitcoin() {
         return bitcoin;
     }
 
-    public void setBitcoin(Bitcoin bitcoin) {
+    public void setBitcoin(Map<String,Bitcoin> bitcoin) {
         this.bitcoin = bitcoin;
     }
 }

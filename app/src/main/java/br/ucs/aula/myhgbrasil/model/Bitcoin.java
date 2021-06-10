@@ -2,67 +2,81 @@ package br.ucs.aula.myhgbrasil.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class Bitcoin {
-    @SerializedName("blockchain_info")
-    private Coin blockchainInfo;
-    @SerializedName("coinbase")
-    private Coin coinbase;
-    @SerializedName("bitstamp")
-    private Coin bitstamp;
-    @SerializedName("foxbit")
-    private Coin foxbit;
-    @SerializedName("mercadobitcoin")
-    private Coin mercadobitcoin;
+    @SerializedName("name")
+    private String name;
+    @SerializedName("format")
+    private List<String> format = null;
+    @SerializedName("last")
+    private Double last;
+    @SerializedName("buy")
+    private Double buy;
+    @SerializedName("sell")
+    private Double sell;
+    @SerializedName("variation")
+
+    private Double variation;
 
     public Bitcoin() {
     }
 
-    public Bitcoin(Coin blockchainInfo, Coin coinbase, Coin bitstamp, Coin foxbit, Coin mercadobitcoin) {
+    public Bitcoin(String name, List<String> format, Double last, Double buy, Double sell, Double variation) {
         super();
-        this.blockchainInfo = blockchainInfo;
-        this.coinbase = coinbase;
-        this.bitstamp = bitstamp;
-        this.foxbit = foxbit;
-        this.mercadobitcoin = mercadobitcoin;
+        this.name = name;
+        this.format = format;
+        this.last = last;
+        this.buy = buy;
+        this.sell = sell;
+        this.variation = variation;
     }
 
-    public Coin getBlockchainInfo() {
-        return blockchainInfo;
+    public String getName() {
+        return name;
     }
 
-    public void setBlockchainInfo(Coin blockchainInfo) {
-        this.blockchainInfo = blockchainInfo;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public Coin getCoinbase() {
-        return coinbase;
+    public List<String> getFormat() {
+        return format;
     }
 
-    public void setCoinbase(Coin coinbase) {
-        this.coinbase = coinbase;
+    public void setFormat(List<String> format) {
+        this.format = format;
     }
 
-    public Coin getBitstamp() {
-        return bitstamp;
+    public Double getLast() {
+        return last;
     }
 
-    public void setBitstamp(Coin bitstamp) {
-        this.bitstamp = bitstamp;
+    public void setLast(Double last) {
+        this.last = last;
     }
 
-    public Coin getFoxbit() {
-        return foxbit;
+    public Double getBuy() {
+        return buy;
     }
 
-    public void setFoxbit(Coin foxbit) {
-        this.foxbit = foxbit;
+    public void setBuy(Double buy) {
+        this.buy = buy;
     }
 
-    public Coin getMercadobitcoin() {
-        return mercadobitcoin;
+    public Double getSell() {
+        return sell;
     }
 
-    public void setMercadobitcoin(Coin mercadobitcoin) {
-        this.mercadobitcoin = mercadobitcoin;
+    public void setSell(Double sell) {
+        this.sell = sell;
+    }
+
+    public Double getVariation() {
+        return variation;
+    }
+
+    public void setVariation(Double variation) {
+        this.variation = variation;
     }
 }
