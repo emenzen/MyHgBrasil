@@ -21,6 +21,8 @@ import br.ucs.aula.myhgbrasil.model.Geoip;
 import br.ucs.aula.myhgbrasil.model.GeoipResponse;
 import br.ucs.aula.myhgbrasil.model.Geoip;
 import br.ucs.aula.myhgbrasil.model.GeoipResponse;
+import br.ucs.aula.myhgbrasil.model.Quotations;
+import br.ucs.aula.myhgbrasil.model.QuotationsResponse;
 import br.ucs.aula.myhgbrasil.model.Taxes;
 import br.ucs.aula.myhgbrasil.model.TaxesResponse;
 import br.ucs.aula.myhgbrasil.rest.ApiHgBrasil;
@@ -105,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //Busca a localização....
+        //Buscar a localização....
         final Geoip geoip = new Geoip();
         Call<GeoipResponse> call1 = apiService.getGeoip(API_KEY,API_ADDRESS);
         call1.enqueue(new Callback<GeoipResponse>() {
@@ -119,6 +121,21 @@ public class MainActivity extends AppCompatActivity {
             public void onFailure(Call<GeoipResponse> call, Throwable t) {
 
             }
+        });
+        //Buscar a Quotações....
+        final Quotations quotations = new Quotations();
+        Call<QuotationsResponse> call2 = apiService.getQuotations(API_KEY);
+        call2.enqueue(new Callback<QuotationsResponse>() {
+                @Override
+                public void onResponse(Call<QuotationsResponse> call, Response<QuotationsResponse> response) {
+                    int statusCode = response.code();
+                    Quotations quotations = response.body().getResults();
+                }
+
+                @Override
+                public void onFailure(Call<QuotationsResponse> call, Throwable t) {
+
+                }
         });
 
         //List<Taxes> taxesL = new ArrayList<>();
