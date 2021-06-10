@@ -11,7 +11,7 @@ import java.util.List;
 
 import br.ucs.aula.myhgbrasil.model.Taxes;
 
-public class BDSQLiteHelper extends SQLiteOpenHelper {
+public class BDSQLiteTaxes extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "MyHgBrasil";
     private static final String TABELA_TAXES = "taxes";
@@ -23,7 +23,7 @@ public class BDSQLiteHelper extends SQLiteOpenHelper {
     private static final String CDI_DAILY = "cdi_daily";
     private static final String[] COLUNAS = {DATE, CDI, SELIC, DAILY_FACTOR, SELIC_DAILY, CDI_DAILY};
 
-    public BDSQLiteHelper(Context context) {
+    public BDSQLiteTaxes(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 

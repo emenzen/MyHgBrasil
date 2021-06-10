@@ -16,7 +16,8 @@ import java.util.List;
 
 import br.ucs.aula.myhgbrasil.R;
 import br.ucs.aula.myhgbrasil.adapter.TaxesAdapter;
-import br.ucs.aula.myhgbrasil.banco.BDSQLiteHelper;
+import br.ucs.aula.myhgbrasil.banco.BDSQLiteStocks;
+import br.ucs.aula.myhgbrasil.banco.BDSQLiteTaxes;
 import br.ucs.aula.myhgbrasil.model.Geoip;
 import br.ucs.aula.myhgbrasil.model.GeoipResponse;
 import br.ucs.aula.myhgbrasil.model.Geoip;
@@ -35,7 +36,8 @@ public class MainActivity extends AppCompatActivity {
 
     private final int PERMISSAO_REQUEST = 2;
     private RecyclerView recyclerView;
-    private BDSQLiteHelper bd;
+    private BDSQLiteTaxes bd;
+    private BDSQLiteStocks bd2;
     private final static String API_KEY = "3c8e5da5";
     private final static String API_ADDRESS = "remote";
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -45,7 +47,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        bd = new BDSQLiteHelper(this);
+        bd = new BDSQLiteTaxes(this);
+        bd2 = new BDSQLiteStocks(this);
 
         // Pede permissão para acessar as mídias gravadas no dispositivo
         if (ContextCompat.checkSelfPermission(this,

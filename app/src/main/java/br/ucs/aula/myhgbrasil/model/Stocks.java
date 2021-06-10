@@ -3,6 +3,7 @@ package br.ucs.aula.myhgbrasil.model;
 import com.google.gson.annotations.SerializedName;
 
 public class Stocks {
+    private String key;
     @SerializedName("name")
     private String name;
     @SerializedName("location")
@@ -22,6 +23,10 @@ public class Stocks {
         this.points = points;
         this.variation = variation;
     }
+
+    public String getKey() {return  key;}
+
+    public  void  setKey(String key) {this.key = key;}
 
     public String getName() {
         return name;
