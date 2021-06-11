@@ -16,10 +16,7 @@ import java.util.List;
 
 import br.ucs.aula.myhgbrasil.R;
 import br.ucs.aula.myhgbrasil.adapter.TaxesAdapter;
-import br.ucs.aula.myhgbrasil.banco.BDSQLiteStocks;
-import br.ucs.aula.myhgbrasil.banco.BDSQLiteTaxes;
-import br.ucs.aula.myhgbrasil.model.Geoip;
-import br.ucs.aula.myhgbrasil.model.GeoipResponse;
+import br.ucs.aula.myhgbrasil.banco.BDSQLiteHelper;
 import br.ucs.aula.myhgbrasil.model.Geoip;
 import br.ucs.aula.myhgbrasil.model.GeoipResponse;
 import br.ucs.aula.myhgbrasil.model.Quotations;
@@ -36,19 +33,18 @@ public class MainActivity extends AppCompatActivity {
 
     private final int PERMISSAO_REQUEST = 2;
     private RecyclerView recyclerView;
-    private BDSQLiteTaxes bd;
-    private BDSQLiteStocks bd2;
+    private BDSQLiteHelper bd;
     private final static String API_KEY = "3c8e5da5";
     private final static String API_ADDRESS = "remote";
     private static final String TAG = MainActivity.class.getSimpleName();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        bd = new BDSQLiteTaxes(this);
-        bd2 = new BDSQLiteStocks(this);
+        bd = new BDSQLiteHelper(this);
 
         // Pede permissão para acessar as mídias gravadas no dispositivo
         if (ContextCompat.checkSelfPermission(this,
@@ -105,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
                 List<Taxes> taxesL = new ArrayList<>();
                 taxesL = bd.getAllTaxes();
                 recyclerView.setAdapter(new TaxesAdapter(taxesL, R.layout.list_taxes, getApplicationContext()));
+
             }
 
             @Override
@@ -126,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<GeoipResponse> call, Throwable t) {
-
+                Log.e(TAG, t.toString());
             }
         });
         //Buscar a Quotações....
@@ -137,11 +134,14 @@ public class MainActivity extends AppCompatActivity {
                 public void onResponse(Call<QuotationsResponse> call, Response<QuotationsResponse> response) {
                     int statusCode = response.code();
                     Quotations quotations = response.body().getResults();
+
+                   bd.deleteAllStocks();
+                   bd.addStocks(quotations.getStocks());
                 }
 
                 @Override
                 public void onFailure(Call<QuotationsResponse> call, Throwable t) {
-
+                    Log.e(TAG, t.toString());
                 }
         });
 
