@@ -1,6 +1,9 @@
 package br.ucs.aula.myhgbrasil.activity;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,6 +24,7 @@ import br.ucs.aula.myhgbrasil.model.Geoip;
 import br.ucs.aula.myhgbrasil.model.GeoipResponse;
 import br.ucs.aula.myhgbrasil.model.Quotations;
 import br.ucs.aula.myhgbrasil.model.QuotationsResponse;
+import br.ucs.aula.myhgbrasil.model.Stocks;
 import br.ucs.aula.myhgbrasil.model.Taxes;
 import br.ucs.aula.myhgbrasil.model.TaxesResponse;
 import br.ucs.aula.myhgbrasil.rest.ApiHgBrasil;
@@ -135,8 +139,12 @@ public class MainActivity extends AppCompatActivity {
                     int statusCode = response.code();
                     Quotations quotations = response.body().getResults();
 
-                   bd.deleteAllStocks();
-                   bd.addStocks(quotations.getStocks());
+                    bd.deleteAllStocks();
+                    bd.addStocks(quotations.getStocks());
+
+                    List<Stocks> stocksList = new ArrayList<>();
+                    stocksList = bd.getAllStocks();
+
                 }
 
                 @Override

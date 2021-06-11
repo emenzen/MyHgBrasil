@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import br.ucs.aula.myhgbrasil.model.Currencies;
 import br.ucs.aula.myhgbrasil.model.Stocks;
 import br.ucs.aula.myhgbrasil.model.Taxes;
 
@@ -35,6 +36,10 @@ public class BDSQLiteHelper extends SQLiteOpenHelper {
     private static final String VARIATION = "variation";
     private static final String[] COLUNAS2 = {ID, NAME, LOCATION, POINTS, VARIATION};
 
+    private static final String TABELA_CURRENCIES = "currencies";
+    private static final String BUY = "buy";
+    private static final String SELL = "sel";
+    private static final String[] COLUNAS3 = {ID, NAME, BUY, SELL, VARIATION};
 
     public BDSQLiteHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -223,8 +228,11 @@ public class BDSQLiteHelper extends SQLiteOpenHelper {
         stocks.setId(cursor.getString(0));
         stocks.setName(cursor.getString(1));
         stocks.setLocation(cursor.getString(2));
-        stocks.setPoints(Double.parseDouble(cursor.getString(3)));
-        stocks.setVariation(Double.parseDouble(cursor.getString(4)));
+        if(cursor.getString(3) != null)
+            stocks.setPoints(Double.parseDouble(cursor.getString(3)));
+        if(cursor.getString(4) != null)
+            stocks.setVariation(Double.parseDouble(cursor.getString(4)));
+
         return stocks;
     }
 
@@ -241,6 +249,96 @@ public class BDSQLiteHelper extends SQLiteOpenHelper {
         }
         db.close();
         return stocksArrayList;
+    }
+
+    // Currencies ################################################################
+    public void addCurrencies(String id, Currencies currencies) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(ID, id);
+        values.put(NAME, currencies.getName());
+        values.put(BUY, currencies.getBuy());
+        values.put(SELL, currencies.getSell());
+        values.put(VARIATION, currencies.getVariation());
+        db.insert(TABELA_CURRENCIES, null, values);
+        db.close();
+    }
+
+    public void addCurrencies(Map<String,Currencies> currenciesMap) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        Set<String> ids = currenciesMap.keySet();
+        for(String id : ids){
+            values.put(ID, id);
+            values.put(NAME, currenciesMap.get(id).getName());
+            values.put(BUY, currenciesMap.get(id).getBuy());
+            values.put(SELL, currenciesMap.get(id).getSell());
+            values.put(VARIATION, currenciesMap.get(id).getVariation());
+            db.insert(TABELA_CURRENCIES, null, values);
+        }
+        db.close();
+    }
+
+
+    public int deleteCurrencies(String id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int i = db.delete(TABELA_CURRENCIES, //tabela
+                ID +" = ?", // colunas para comparar
+                new String[] { id });
+        db.close();
+        return i; // número de linhas excluídas
+    }
+
+    public void deleteAllCurrencies() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABELA_CURRENCIES,null,null);
+        db.close();
+    }
+
+    public int updateCurrencies(Currencies currencies) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(ID, currencies.getId());
+        values.put(NAME, currencies.getName());
+        values.put(BUY, currencies.getBuy());
+        values.put(SELL, currencies.getSell());
+        values.put(VARIATION, currencies.getVariation());
+
+        int i = db.update(TABELA_CURRENCIES, //tabela
+                values, // valores
+                ID +" = ?", // colunas para comparar
+                new String[] { currencies.getId() }); //parâmetros
+        db.close();
+        return i; // número de linhas modificadas
+    }
+
+    private Currencies cursorToCurrencies(Cursor cursor) {
+        Currencies currencies = new Currencies();
+        currencies.setId(cursor.getString(0));
+        currencies.setName(cursor.getString(1));
+        if(cursor.getString(2) != null)
+            currencies.setBuy(Double.parseDouble(cursor.getString(2)));
+        if(cursor.getString(3) != null)
+            currencies.setSell(Double.parseDouble(cursor.getString(3)));
+        if(cursor.getString(4) != null)
+            currencies.setVariation(Double.parseDouble(cursor.getString(4)));
+
+        return currencies;
+    }
+
+    public ArrayList<Currencies> getAllCurrencies() {
+        ArrayList<Currencies> currenciesArrayList = new ArrayList<Currencies>();
+        String query = "SELECT * FROM " + TABELA_STOCKS;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor.moveToFirst()) {
+            do {
+                Currencies currencies = cursorToCurrencies(cursor);
+                currenciesArrayList.add(currencies);
+            } while (cursor.moveToNext());
+        }
+        db.close();
+        return currenciesArrayList;
     }
 
 }

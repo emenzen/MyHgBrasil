@@ -9,13 +9,13 @@ public class Currencies {
     @SerializedName("buy")
     private Double buy;
     @SerializedName("sell")
-    private Object sell;
+    private Double sell;
     @SerializedName("variation")
     private Double variation;
 
     public Currencies() { super(); }
 
-    public Currencies(String name, Double buy, Object sell, Double variation) {
+    public Currencies(String name, Double buy, Double sell, Double variation) {
         super();
         this.name = name;
         this.buy = buy;
@@ -43,11 +43,11 @@ public class Currencies {
         this.buy = buy;
     }
 
-    public Object getSell() {
+    public Double getSell() {
         return sell;
     }
 
-    public void setSell(Object sell) {
+    public void setSell(Double sell) {
         this.sell = sell;
     }
 
