@@ -38,7 +38,7 @@ public class BDSQLiteHelper extends SQLiteOpenHelper {
 
     private static final String TABELA_CURRENCIES = "currencies";
     private static final String BUY = "buy";
-    private static final String SELL = "sel";
+    private static final String SELL = "sell";
     private static final String[] COLUNAS3 = {ID, NAME, BUY, SELL, VARIATION};
 
     public BDSQLiteHelper(Context context) {
@@ -275,16 +275,29 @@ public class BDSQLiteHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void addCurrencies(Map<String,Currencies> currenciesMap) {
+    public void addCurrencies(Map<String,?> currenciesMap) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        Set<String> ids = currenciesMap.keySet();
-        for(String id : ids){
-            values.put(ID, id);
-            values.put(NAME, currenciesMap.get(id).getName());
-            values.put(BUY, currenciesMap.get(id).getBuy());
-            values.put(SELL, currenciesMap.get(id).getSell());
-            values.put(VARIATION, currenciesMap.get(id).getVariation());
+
+        for(Map.Entry<String, ?> entry : currenciesMap.entrySet()){
+            values.put(ID,  entry.getKey());
+
+            Map<String,Currencies> cur = (Map<String, Currencies>) entry.getValue();
+            for(Map.Entry<String,?> entry1 : cur.entrySet()){
+                if(entry1.getValue() != null) {
+                    switch (entry1.getKey()) {
+                        case "name":
+                            values.put(NAME, String.valueOf(entry1.getValue()));
+                            break;
+                        case "buy":
+                            values.put(BUY, Double.valueOf(String.valueOf(entry1.getValue())));
+                            break;
+                        case "sell": values.put(SELL, Double.valueOf(String.valueOf(entry1.getValue()))); break;
+                        case "variation":
+                            values.put(VARIATION, Double.valueOf(String.valueOf(entry1.getValue())));
+                    }
+                }
+            }
             db.insert(TABELA_CURRENCIES, null, values);
         }
         db.close();
@@ -339,7 +352,7 @@ public class BDSQLiteHelper extends SQLiteOpenHelper {
 
     public ArrayList<Currencies> getAllCurrencies() {
         ArrayList<Currencies> currenciesArrayList = new ArrayList<Currencies>();
-        String query = "SELECT * FROM " + TABELA_STOCKS;
+        String query = "SELECT * FROM " + TABELA_CURRENCIES;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         if (cursor.moveToFirst()) {

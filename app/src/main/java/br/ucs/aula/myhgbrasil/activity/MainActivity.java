@@ -19,8 +19,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import br.ucs.aula.myhgbrasil.R;
+import br.ucs.aula.myhgbrasil.adapter.CurrenciesAdapter;
 import br.ucs.aula.myhgbrasil.adapter.StocksAdapter;
 import br.ucs.aula.myhgbrasil.adapter.TaxesAdapter;
 import br.ucs.aula.myhgbrasil.banco.BDSQLiteHelper;
@@ -45,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerViewStocks;
     private RecyclerView recyclerViewCurrencies;
     private BDSQLiteHelper bd;
-    private final static String API_KEY = "3c8e5da5";
+    private final static String API_KEY = "f9709a1b";
     private final static String API_ADDRESS = "remote";
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -151,12 +153,18 @@ public class MainActivity extends AppCompatActivity {
                     Quotations quotations = response.body().getResults();
 
                     bd.deleteAllStocks();
-                    bd.deleteAllCurrencies();
                     bd.addStocks(quotations.getStocks());
-                    //bd.addCurrencies(quotations.getCurrencies());
                     List<Stocks> stocksList = new ArrayList<>();
                     stocksList = bd.getAllStocks();
                     recyclerViewStocks.setAdapter(new StocksAdapter(stocksList, R.layout.list_stocks, getApplicationContext()));
+
+                    bd.deleteAllCurrencies();
+                    quotations.getCurrencies().remove("source");
+                    bd.addCurrencies(quotations.getCurrencies());
+                    List<Currencies> currenciesList = new ArrayList<>();
+                    currenciesList = bd.getAllCurrencies();
+                    recyclerViewCurrencies.setAdapter(new CurrenciesAdapter(currenciesList, R.layout.list_currencies, getApplicationContext()));
+
 
 
                 }
