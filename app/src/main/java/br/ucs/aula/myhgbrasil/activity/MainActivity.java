@@ -3,10 +3,13 @@ package br.ucs.aula.myhgbrasil.activity;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -18,8 +21,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.ucs.aula.myhgbrasil.R;
+import br.ucs.aula.myhgbrasil.adapter.StocksAdapter;
 import br.ucs.aula.myhgbrasil.adapter.TaxesAdapter;
 import br.ucs.aula.myhgbrasil.banco.BDSQLiteHelper;
+import br.ucs.aula.myhgbrasil.model.Currencies;
 import br.ucs.aula.myhgbrasil.model.Geoip;
 import br.ucs.aula.myhgbrasil.model.GeoipResponse;
 import br.ucs.aula.myhgbrasil.model.Quotations;
@@ -36,7 +41,9 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
 
     private final int PERMISSAO_REQUEST = 2;
-    private RecyclerView recyclerView;
+    private RecyclerView recyclerViewTaxes;
+    private RecyclerView recyclerViewStocks;
+    private RecyclerView recyclerViewCurrencies;
     private BDSQLiteHelper bd;
     private final static String API_KEY = "3c8e5da5";
     private final static String API_ADDRESS = "remote";
@@ -77,10 +84,20 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        recyclerView = findViewById(R.id.lvTaxes);
+        recyclerViewTaxes = findViewById(R.id.lvTaxes);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        recyclerView.setLayoutManager(layoutManager);
+        recyclerViewTaxes.setLayoutManager(layoutManager);
+
+        recyclerViewStocks = findViewById(R.id.lvStocks);
+        LinearLayoutManager layoutManager2 = new LinearLayoutManager(this);
+        layoutManager2.setOrientation(LinearLayoutManager.HORIZONTAL);
+        recyclerViewStocks.setLayoutManager(layoutManager2);
+
+        recyclerViewCurrencies = findViewById(R.id.lvCurrencies);
+        LinearLayoutManager layoutManager3 = new LinearLayoutManager(this);
+        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        recyclerViewCurrencies.setLayoutManager(layoutManager3);
 
         final List<Taxes> taxesList = new ArrayList<>();
         //Realiza a busca das taxas na API
@@ -93,18 +110,12 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<TaxesResponse> call, Response<TaxesResponse> response) {
                 int statusCode = response.code();
                 List<Taxes> taxesList = response.body().getResults();
-                taxesList.add(new Taxes("2025-05-14",2.0,3.0,4.0,5.6,6.9));
-                taxesList.add(new Taxes("2025-05-14",2.0,3.0,4.0,5.6,6.9));
-                taxesList.add(new Taxes("2025-05-14",2.0,3.0,4.0,5.6,6.9));
-                taxesList.add(new Taxes("2025-05-14",2.0,3.0,4.0,5.6,6.9));
-                taxesList.add(new Taxes("2025-05-14",2.0,3.0,4.0,5.6,6.9));
-                //recyclerView.setAdapter(new TaxesAdapter(taxesList, R.layout.list_taxes, getApplicationContext()));
 
                 bd.deleteAllTaxes();
                 bd.addTaxes(taxesList);
                 List<Taxes> taxesL = new ArrayList<>();
                 taxesL = bd.getAllTaxes();
-                recyclerView.setAdapter(new TaxesAdapter(taxesL, R.layout.list_taxes, getApplicationContext()));
+                recyclerViewTaxes.setAdapter(new TaxesAdapter(taxesL, R.layout.list_taxes, getApplicationContext()));
 
             }
 
@@ -140,10 +151,13 @@ public class MainActivity extends AppCompatActivity {
                     Quotations quotations = response.body().getResults();
 
                     bd.deleteAllStocks();
+                    bd.deleteAllCurrencies();
                     bd.addStocks(quotations.getStocks());
-
+                    //bd.addCurrencies(quotations.getCurrencies());
                     List<Stocks> stocksList = new ArrayList<>();
                     stocksList = bd.getAllStocks();
+                    recyclerViewStocks.setAdapter(new StocksAdapter(stocksList, R.layout.list_stocks, getApplicationContext()));
+
 
                 }
 
@@ -160,5 +174,8 @@ public class MainActivity extends AppCompatActivity {
         //taxesL = bd.getAllTaxes();
         //recyclerView.setAdapter(new TaxesAdapter(taxesL, R.layout.list_taxes, getApplicationContext()));
         //adapter.notifyDataSetChanged();
+
+        Toast.makeText(this,"Mostrando dados do banco local",Toast.LENGTH_LONG).show();
     }
+
 }

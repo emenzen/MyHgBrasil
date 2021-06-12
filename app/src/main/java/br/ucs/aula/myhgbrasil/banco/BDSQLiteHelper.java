@@ -63,6 +63,14 @@ public class BDSQLiteHelper extends SQLiteOpenHelper {
                 "points REAL,"+
                 "variation REAL)";
         db.execSQL(CREATE_TABLE);
+
+        CREATE_TABLE = "CREATE TABLE currencies ("+
+                "id TEXT,"+
+                "name TEXT,"+
+                "buy REAL,"+
+                "sell REAL,"+
+                "variation REAL)";
+        db.execSQL(CREATE_TABLE);
     }
 
     @Override
@@ -71,6 +79,9 @@ public class BDSQLiteHelper extends SQLiteOpenHelper {
         this.onCreate(db);
 
         db.execSQL("DROP TABLE IF EXISTS stocks");
+        this.onCreate(db);
+
+        db.execSQL("DROP TABLE IF EXISTS currencies");
         this.onCreate(db);
     }
 
