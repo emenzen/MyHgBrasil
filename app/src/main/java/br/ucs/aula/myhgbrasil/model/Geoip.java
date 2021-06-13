@@ -3,6 +3,7 @@ package br.ucs.aula.myhgbrasil.model;
 import com.google.gson.annotations.SerializedName;
 
 public class Geoip {
+    private int idGeolocalizations;
     @SerializedName("address")
     private String address;
     @SerializedName("type")
@@ -45,6 +46,10 @@ public class Geoip {
         this.longitude = longitude;
         this.woeid = woeid;
     }
+
+    public int getIdGeolocalizations() { return idGeolocalizations; }
+
+    public void setIdGeolocalizations(int idGeolocalizations) { this.idGeolocalizations = idGeolocalizations; }
 
     public String getAddress() {
         return address;
