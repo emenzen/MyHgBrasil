@@ -13,6 +13,7 @@
         android:theme="@style/Theme.MyHgBrasil">
         <activity android:name=".activity.EditarTaxesActivity"></activity>
         <activity android:name=".activity.EditarStocksActivity"></activity>
+        <activity android:name=".activity.EditarCurrenciesActivity"></activity>
         <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

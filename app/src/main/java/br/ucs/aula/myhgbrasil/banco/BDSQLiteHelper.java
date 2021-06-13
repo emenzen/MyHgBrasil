@@ -448,7 +448,7 @@ public class BDSQLiteHelper extends SQLiteOpenHelper {
     public void addGeoips(Geoip geoip) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(IDGEOLOCALIZATIONS, geoip.getIdGeolocalizations());
+        //values.put(IDGEOLOCALIZATIONS, geoip.getIdGeolocalizations());
         values.put(ADDRESS, geoip.getAddress());
         values.put(CITY, geoip.getCity());
         values.put(CONTINENT, geoip.getContinent());

@@ -7,6 +7,15 @@
     tools:context=".activity.MainActivity">
 
     <TextView
+        android:id="@+id/textViewGeoip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#A9A9A9"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:gravity="right" />
+
+    <TextView
         android:id="@+id/textViewTaxes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
