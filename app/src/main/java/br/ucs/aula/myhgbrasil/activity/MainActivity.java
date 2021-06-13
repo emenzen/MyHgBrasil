@@ -1,14 +1,16 @@
 package br.ucs.aula.myhgbrasil.activity;
 
 import android.Manifest;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,7 +21,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import br.ucs.aula.myhgbrasil.R;
 import br.ucs.aula.myhgbrasil.adapter.CurrenciesAdapter;
@@ -50,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
     private final static String API_KEY = "f9709a1b";
     private final static String API_ADDRESS = "remote";
     private static final String TAG = MainActivity.class.getSimpleName();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +101,6 @@ public class MainActivity extends AppCompatActivity {
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         recyclerViewCurrencies.setLayoutManager(layoutManager3);
 
-        final List<Taxes> taxesList = new ArrayList<>();
         //Realiza a busca das taxas na API
         ApiInterface apiService =
                 ApiHgBrasil.getHgBrasil().create(ApiInterface.class);
@@ -184,6 +183,7 @@ public class MainActivity extends AppCompatActivity {
         //adapter.notifyDataSetChanged();
 
         Toast.makeText(this,"Mostrando dados do banco local",Toast.LENGTH_LONG).show();
+
     }
 
 }

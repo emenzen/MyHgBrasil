@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">MyHgBrasil</string>
+    <string name="confirmar_exclusao">Confirme exclusão</string>
+    <string name="quer_mesmo_apagar">Você realmente quer apagar esse registro?</string>
 </resources>

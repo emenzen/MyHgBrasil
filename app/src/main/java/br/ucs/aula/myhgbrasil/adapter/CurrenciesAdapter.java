@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -79,7 +80,7 @@ public class CurrenciesAdapter extends RecyclerView.Adapter<CurrenciesAdapter.Vi
 
         public void onClick(View view) {
             AppCompatActivity appCompatActivity = new AppCompatActivity();
-            //Toast.makeText(view.getContext(),"Você selecionou " + elementos.get(getLayoutPosition()).getCodigo(),Toast.LENGTH_LONG).show();
+            Toast.makeText(view.getContext(),"Você selecionou " + currenciesList.get(getLayoutPosition()).getId(),Toast.LENGTH_LONG).show();
 
             Context context = view.getContext();
             //Intent intent = new Intent(context, EditarFotoActivity.class);

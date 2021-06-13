@@ -31,8 +31,8 @@ public class Taxes {
         this.cdi = cdi;
         this.selic = selic;
         this.dailyFactor = dailyFactor;
-        this.selicDaily = selicDaily;
         this.cdiDaily = cdiDaily;
+        this.selicDaily = selicDaily;
     }
 
     public String getDate() {

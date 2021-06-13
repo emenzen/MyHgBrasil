@@ -28,12 +28,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
     <TextView
-        android:id="@+id/txtSelic_daily"
+        android:id="@+id/txtCdi_daily"
         android:background="@drawable/shape"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
     <TextView
-        android:id="@+id/txtCdi_daily"
+        android:id="@+id/txtSelic_daily"
         android:background="@drawable/shape"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

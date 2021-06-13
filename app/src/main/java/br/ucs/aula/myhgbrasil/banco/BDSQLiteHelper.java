@@ -173,6 +173,25 @@ public class BDSQLiteHelper extends SQLiteOpenHelper {
         return TaxesList;
     }
 
+    public Taxes getTaxes(String date) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABELA_TAXES, // a. tabela
+                COLUNAS, // b. colunas
+                " date = ?", // c. colunas para comparar
+                new String[] { date }, // d. parâmetros
+                null, // e. group by
+                null, // f. having
+                null, // g. order by
+                null); // h. limit
+        if (cursor == null) {
+            return null;
+        } else {
+            cursor.moveToFirst();
+            Taxes taxes = cursorToTaxes(cursor);
+            return taxes;
+        }
+    }
+
     // Stocks ################################################################
     public void addStocks(String id, Stocks stocks) {
         SQLiteDatabase db = this.getWritableDatabase();
