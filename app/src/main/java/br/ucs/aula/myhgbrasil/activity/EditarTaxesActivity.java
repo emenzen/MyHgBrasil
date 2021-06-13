@@ -10,6 +10,8 @@ import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.List;
+
 import br.ucs.aula.myhgbrasil.R;
 import br.ucs.aula.myhgbrasil.banco.BDSQLiteHelper;
 import br.ucs.aula.myhgbrasil.model.Taxes;
@@ -23,9 +25,9 @@ public class EditarTaxesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.editar_taxes);
         Intent intent = getIntent();
-        final String dates = intent.getStringExtra("DATE");
+        final int idTaxes = intent.getIntExtra("IDTAXES",0);
         bd = new BDSQLiteHelper(this);
-        Taxes taxes = bd.getTaxes(dates);
+        Taxes taxes = bd.getTaxes(idTaxes);
         final EditText date = (EditText) findViewById(R.id.etDate);
         final EditText cdi = (EditText) findViewById(R.id.etCdi);
         final EditText selic = (EditText) findViewById(R.id.etSelic);
@@ -41,11 +43,13 @@ public class EditarTaxesActivity extends AppCompatActivity {
         selicDaily.setText(String.valueOf(taxes.getSelicDaily()));
 
 
+
         final Button alterar = (Button) findViewById(R.id.btnAlterar);
         alterar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Taxes taxes = new Taxes();
+                taxes.setIdTaxes(idTaxes);
                 taxes.setDate(date.getText().toString());
                 taxes.setCdi(Double.parseDouble(cdi.getText().toString()));
                 taxes.setSelic(Double.parseDouble(selic.getText().toString()));
@@ -72,7 +76,7 @@ public class EditarTaxesActivity extends AppCompatActivity {
 
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 Taxes taxes = new Taxes();
-                                taxes.setDate(dates);
+                                taxes.setIdTaxes(idTaxes);
                                 bd.deleteTaxes(taxes);
                                 Intent intent = new Intent(EditarTaxesActivity.this, MainActivity.class);
                                 startActivity(intent);
@@ -81,5 +85,7 @@ public class EditarTaxesActivity extends AppCompatActivity {
                         .setNegativeButton(android.R.string.no, null).show();
             }
         });
+
+
     }
 }

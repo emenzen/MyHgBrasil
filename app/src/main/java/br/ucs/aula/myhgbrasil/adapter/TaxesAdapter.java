@@ -1,6 +1,7 @@
 package br.ucs.aula.myhgbrasil.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.ucs.aula.myhgbrasil.R;
+import br.ucs.aula.myhgbrasil.activity.EditarTaxesActivity;
 import br.ucs.aula.myhgbrasil.model.Taxes;
 
 public class TaxesAdapter extends RecyclerView.Adapter<TaxesAdapter.ViewHolder>{
@@ -77,9 +79,9 @@ public class TaxesAdapter extends RecyclerView.Adapter<TaxesAdapter.ViewHolder>{
             //Toast.makeText(view.getContext(),"Você selecionou " + elementos.get(getLayoutPosition()).getCodigo(),Toast.LENGTH_LONG).show();
 
             Context context = view.getContext();
-            //Intent intent = new Intent(context, EditarFotoActivity.class);
-            //intent.putExtra("CODIGO", elementos.get(getLayoutPosition()).getCodigo());
-            //context.startActivity(intent);
+            Intent intent = new Intent(context, EditarTaxesActivity.class);
+            intent.putExtra("IDTAXES", taxesList.get(getLayoutPosition()).getIdTaxes());
+            context.startActivity(intent);
 
         }
     }

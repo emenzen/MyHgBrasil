@@ -20,13 +20,14 @@ public class BDSQLiteHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "MyHgBrasil";
 
     private static final String TABELA_TAXES = "taxes";
+    private static final String IDTAXES = "idtaxes";
     private static final String DATE = "date";
     private static final String CDI = "cdi";
     private static final String SELIC = "selic";
     private static final String DAILY_FACTOR = "daily_factor";
     private static final String SELIC_DAILY = "selic_daily";
     private static final String CDI_DAILY = "cdi_daily";
-    private static final String[] COLUNAS = {DATE, CDI, SELIC, DAILY_FACTOR, SELIC_DAILY, CDI_DAILY};
+    private static final String[] COLUNAS = {IDTAXES, DATE, CDI, SELIC, DAILY_FACTOR, SELIC_DAILY, CDI_DAILY};
 
     private static final String TABELA_STOCKS = "stocks";
     private static final String ID = "id";
@@ -48,6 +49,7 @@ public class BDSQLiteHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_TABLE = "CREATE TABLE taxes ("+
+                "idtaxes INTEGER PRIMARY KEY AUTOINCREMENT,"+
                 "date TEXT,"+
                 "cdi REAL,"+
                 "selic REAL,"+
@@ -118,8 +120,8 @@ public class BDSQLiteHelper extends SQLiteOpenHelper {
     public int deleteTaxes(Taxes taxes) {
         SQLiteDatabase db = this.getWritableDatabase();
         int i = db.delete(TABELA_TAXES, //tabela
-                DATE+" = ?", // colunas para comparar
-                new String[] { taxes.getDate() });
+                IDTAXES+" = ?", // colunas para comparar
+                new String[] { String.valueOf(taxes.getIdTaxes()) });
         db.close();
         return i; // número de linhas excluídas
     }
@@ -134,28 +136,30 @@ public class BDSQLiteHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DATE, taxes.getDate());
-        values.put(CDI, taxes.getCdi());
-        values.put(SELIC, taxes.getSelic());
-        values.put(DAILY_FACTOR, taxes.getDailyFactor());
-        values.put(SELIC_DAILY, taxes.getSelicDaily());
-        values.put(CDI_DAILY, taxes.getCdiDaily());
+        values.put(CDI, new Double(taxes.getCdi()));
+        values.put(SELIC,  new Double(taxes.getSelic()));
+        values.put(DAILY_FACTOR,  new Double(taxes.getDailyFactor()));
+        values.put(SELIC_DAILY,  new Double(taxes.getSelicDaily()));
+        values.put(CDI_DAILY,  new Double(taxes.getCdiDaily()));
 
         int i = db.update(TABELA_TAXES, //tabela
                 values, // valores
-                DATE+" = ?", // colunas para comparar
-                new String[] { taxes.getDate() }); //parâmetros
+                IDTAXES+" = ?", // colunas para comparar
+                new String[] { String.valueOf(taxes.getIdTaxes()) }
+                ); //parâmetros
         db.close();
         return i; // número de linhas modificadas
     }
 
     private Taxes cursorToTaxes(Cursor cursor) {
         Taxes taxes = new br.ucs.aula.myhgbrasil.model.Taxes();
-        taxes.setDate(cursor.getString(0));
-        taxes.setCdi(Double.parseDouble(cursor.getString(1)));
-        taxes.setSelic(Double.parseDouble(cursor.getString(2)));
-        taxes.setDailyFactor(Double.parseDouble(cursor.getString(3)));
-        taxes.setSelicDaily(Double.parseDouble(cursor.getString(4)));
-        taxes.setCdiDaily(Double.parseDouble(cursor.getString(5)));
+        taxes.setIdTaxes(Integer.parseInt(cursor.getString(0)));
+        taxes.setDate(cursor.getString(1));
+        taxes.setCdi(Double.parseDouble(cursor.getString(2)));
+        taxes.setSelic(Double.parseDouble(cursor.getString(3)));
+        taxes.setDailyFactor(Double.parseDouble(cursor.getString(4)));
+        taxes.setSelicDaily(Double.parseDouble(cursor.getString(5)));
+        taxes.setCdiDaily(Double.parseDouble(cursor.getString(6)));
         return taxes;
     }
 
@@ -173,12 +177,12 @@ public class BDSQLiteHelper extends SQLiteOpenHelper {
         return TaxesList;
     }
 
-    public Taxes getTaxes(String date) {
+    public Taxes getTaxes(int idTaxes) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(TABELA_TAXES, // a. tabela
                 COLUNAS, // b. colunas
-                " date = ?", // c. colunas para comparar
-                new String[] { date }, // d. parâmetros
+                " idtaxes = ?", // c. colunas para comparar
+                new String[] { String.valueOf(idTaxes) }, // d. parâmetros
                 null, // e. group by
                 null, // f. having
                 null, // g. order by

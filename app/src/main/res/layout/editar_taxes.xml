@@ -79,7 +79,7 @@
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="245sp"
+        android:layout_marginTop="305sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -95,7 +95,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="320sp"
+        android:layout_marginTop="380sp"
         android:layout_weight="1"
         android:text="Alterar"
         app:layout_constraintStart_toStartOf="parent"
@@ -106,7 +106,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="108dp"
-        android:layout_marginTop="320sp"
+        android:layout_marginTop="380sp"
         android:layout_weight="1"
         android:text="Remover"
         app:layout_constraintStart_toStartOf="parent"

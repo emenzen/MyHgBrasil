@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         bd = new BDSQLiteHelper(this);
 
         // Pede permissão para acessar as mídias gravadas no dispositivo
@@ -90,62 +89,71 @@ public class MainActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         recyclerViewTaxes.setLayoutManager(layoutManager);
+        List<Taxes> taxesL = new ArrayList<>();
+        taxesL = bd.getAllTaxes();
+        recyclerViewTaxes.setAdapter(new TaxesAdapter(taxesL, R.layout.list_taxes, getApplicationContext()));
+
 
         recyclerViewStocks = findViewById(R.id.lvStocks);
         LinearLayoutManager layoutManager2 = new LinearLayoutManager(this);
         layoutManager2.setOrientation(LinearLayoutManager.HORIZONTAL);
         recyclerViewStocks.setLayoutManager(layoutManager2);
+        List<Stocks> stocksList = new ArrayList<>();
+        stocksList = bd.getAllStocks();
+        recyclerViewStocks.setAdapter(new StocksAdapter(stocksList, R.layout.list_stocks, getApplicationContext()));
+
 
         recyclerViewCurrencies = findViewById(R.id.lvCurrencies);
         LinearLayoutManager layoutManager3 = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         recyclerViewCurrencies.setLayoutManager(layoutManager3);
+        List<Currencies> currenciesList = new ArrayList<>();
+        currenciesList = bd.getAllCurrencies();
+        recyclerViewCurrencies.setAdapter(new CurrenciesAdapter(currenciesList, R.layout.list_currencies, getApplicationContext()));
 
-        //Realiza a busca das taxas na API
-        ApiInterface apiService =
-                ApiHgBrasil.getHgBrasil().create(ApiInterface.class);
+        if(true) {
+            //Realiza a busca das taxas na API
+            ApiInterface apiService =
+                    ApiHgBrasil.getHgBrasil().create(ApiInterface.class);
 
-        Call<TaxesResponse> call = apiService.getTaxes(API_KEY);
-        call.enqueue(new Callback<TaxesResponse>() {
-            @Override
-            public void onResponse(Call<TaxesResponse> call, Response<TaxesResponse> response) {
-                int statusCode = response.code();
-                List<Taxes> taxesList = response.body().getResults();
+            Call<TaxesResponse> call = apiService.getTaxes(API_KEY);
+            call.enqueue(new Callback<TaxesResponse>() {
+                @Override
+                public void onResponse(Call<TaxesResponse> call, Response<TaxesResponse> response) {
+                    int statusCode = response.code();
+                    List<Taxes> taxesList = response.body().getResults();
 
-                bd.deleteAllTaxes();
-                bd.addTaxes(taxesList);
-                List<Taxes> taxesL = new ArrayList<>();
-                taxesL = bd.getAllTaxes();
-                recyclerViewTaxes.setAdapter(new TaxesAdapter(taxesL, R.layout.list_taxes, getApplicationContext()));
+                    bd.deleteAllTaxes();
+                    bd.addTaxes(taxesList);
 
-            }
+                }
 
-            @Override
-            public void onFailure(Call<TaxesResponse> call, Throwable t) {
-                // Log error here since request failed
-                Log.e(TAG, t.toString());
-            }
-        });
+                @Override
+                public void onFailure(Call<TaxesResponse> call, Throwable t) {
+                    // Log error here since request failed
+                    Log.e(TAG, t.toString());
+                }
+            });
 
-        //Buscar a localização....
-        final Geoip geoip = new Geoip();
-        Call<GeoipResponse> call1 = apiService.getGeoip(API_KEY,API_ADDRESS);
-        call1.enqueue(new Callback<GeoipResponse>() {
-            @Override
-            public void onResponse(Call<GeoipResponse> call, Response<GeoipResponse> response) {
-                int statusCode = response.code();
-                Geoip geoip = response.body().getResults();
-            }
+            //Buscar a localização....
+            final Geoip geoip = new Geoip();
+            Call<GeoipResponse> call1 = apiService.getGeoip(API_KEY, API_ADDRESS);
+            call1.enqueue(new Callback<GeoipResponse>() {
+                @Override
+                public void onResponse(Call<GeoipResponse> call, Response<GeoipResponse> response) {
+                    int statusCode = response.code();
+                    Geoip geoip = response.body().getResults();
+                }
 
-            @Override
-            public void onFailure(Call<GeoipResponse> call, Throwable t) {
-                Log.e(TAG, t.toString());
-            }
-        });
-        //Buscar a Quotações....
-        final Quotations quotations = new Quotations();
-        Call<QuotationsResponse> call2 = apiService.getQuotations(API_KEY);
-        call2.enqueue(new Callback<QuotationsResponse>() {
+                @Override
+                public void onFailure(Call<GeoipResponse> call, Throwable t) {
+                    Log.e(TAG, t.toString());
+                }
+            });
+            //Buscar a Quotações....
+            final Quotations quotations = new Quotations();
+            Call<QuotationsResponse> call2 = apiService.getQuotations(API_KEY);
+            call2.enqueue(new Callback<QuotationsResponse>() {
                 @Override
                 public void onResponse(Call<QuotationsResponse> call, Response<QuotationsResponse> response) {
                     int statusCode = response.code();
@@ -153,17 +161,10 @@ public class MainActivity extends AppCompatActivity {
 
                     bd.deleteAllStocks();
                     bd.addStocks(quotations.getStocks());
-                    List<Stocks> stocksList = new ArrayList<>();
-                    stocksList = bd.getAllStocks();
-                    recyclerViewStocks.setAdapter(new StocksAdapter(stocksList, R.layout.list_stocks, getApplicationContext()));
 
                     bd.deleteAllCurrencies();
                     quotations.getCurrencies().remove("source");
                     bd.addCurrencies(quotations.getCurrencies());
-                    List<Currencies> currenciesList = new ArrayList<>();
-                    currenciesList = bd.getAllCurrencies();
-                    recyclerViewCurrencies.setAdapter(new CurrenciesAdapter(currenciesList, R.layout.list_currencies, getApplicationContext()));
-
 
 
                 }
@@ -172,7 +173,11 @@ public class MainActivity extends AppCompatActivity {
                 public void onFailure(Call<QuotationsResponse> call, Throwable t) {
                     Log.e(TAG, t.toString());
                 }
-        });
+            });
+        }
+
+
+
 
         //List<Taxes> taxesL = new ArrayList<>();
         //taxesList.add(new Taxes("02-05-2021",2.0,3.0,4.0,5.6,6.9));

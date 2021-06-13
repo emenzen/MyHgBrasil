@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 public class Taxes {
+    private int idTaxes;
     @SerializedName("date")
     private String date;
     @SerializedName("cdi")
@@ -39,11 +40,12 @@ public class Taxes {
         return date;
     }
 
+    /*
     public void setDate(String date) {
         //para formatar a data no formato dd/mm/yyyy
         DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        Date date1 = new Date();
+        Date date1 = new Date(date);
         try {
             date1 = formatter.parse(date);
         } catch (ParseException e) {
@@ -51,6 +53,12 @@ public class Taxes {
         }
         this.date = dateFormat.format(date1);
     }
+     */
+    public void setDate(String date){this.date = date;}
+
+    public int getIdTaxes(){return idTaxes;}
+
+    public void setIdTaxes(int idTaxes){this.idTaxes = idTaxes;}
 
     public Double getCdi() {
         return cdi;
