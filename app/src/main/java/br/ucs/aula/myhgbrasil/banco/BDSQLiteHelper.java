@@ -31,16 +31,19 @@ public class BDSQLiteHelper extends SQLiteOpenHelper {
     private static final String[] COLUNAS = {IDTAXES, DATE, CDI, SELIC, DAILY_FACTOR, SELIC_DAILY, CDI_DAILY};
 
     private static final String TABELA_STOCKS = "stocks";
-    private static final String ID = "id";
-    private static final String NAME = "name";
+    private static final String IDSTOCKS = "idstocks";
+    private static final String NAMESTOCKS = "namestocks";
     private static final String LOCATION = "location";
     private static final String POINTS = "points";
-    private static final String VARIATION = "variation";
-    private static final String[] COLUNAS2 = {ID, NAME, LOCATION, POINTS, VARIATION};
+    private static final String VARIATIONSTOCKS = "variationstocks";
+    private static final String[] COLUNAS2 = {IDSTOCKS, NAMESTOCKS, LOCATION, POINTS, VARIATIONSTOCKS};
 
     private static final String TABELA_CURRENCIES = "currencies";
+    private static final String ID = "id";
+    private static final String NAME = "name";
     private static final String BUY = "buy";
     private static final String SELL = "sell";
+    private static final String VARIATION = "variation";
     private static final String[] COLUNAS3 = {ID, NAME, BUY, SELL, VARIATION};
 
     private static final String TABELA_GEOLOCALIZATIONS = "geolocalizations";
@@ -75,11 +78,11 @@ public class BDSQLiteHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE);
 
         CREATE_TABLE = "CREATE TABLE stocks ("+
-                "id TEXT,"+
-                "name TEXT,"+
+                "idstocks TEXT,"+
+                "namestocks TEXT,"+
                 "location TEXT,"+
                 "points REAL,"+
-                "variation REAL)";
+                "variationstocks REAL)";
         db.execSQL(CREATE_TABLE);
 
         CREATE_TABLE = "CREATE TABLE currencies ("+
@@ -231,14 +234,33 @@ public class BDSQLiteHelper extends SQLiteOpenHelper {
     }
 
     // Stocks ################################################################
+    public Stocks getStocks(String id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABELA_STOCKS, // a. tabela
+                COLUNAS2, // b. colunas
+                " idstocks = ?", // c. colunas para comparar
+                new String[] { id }, // d. parâmetros
+                null, // e. group by
+                null, // f. having
+                null, // g. order by
+                null); // h. limit
+        if (cursor == null) {
+            return null;
+        } else {
+            cursor.moveToFirst();
+            Stocks stocks = cursorToStocks(cursor);
+            return stocks;
+        }
+    }
+
     public void addStocks(String id, Stocks stocks) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(ID, id);
-        values.put(NAME, stocks.getName());
+        values.put(IDSTOCKS, id);
+        values.put(NAMESTOCKS, stocks.getName());
         values.put(LOCATION, stocks.getLocation());
         values.put(POINTS, stocks.getPoints());
-        values.put(VARIATION, stocks.getVariation());
+        values.put(VARIATIONSTOCKS, stocks.getVariation());
         db.insert(TABELA_STOCKS, null, values);
         db.close();
     }
@@ -248,11 +270,11 @@ public class BDSQLiteHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         Set<String> ids = stocksMap.keySet();
         for(String id : ids){
-            values.put(ID, id);
-            values.put(NAME, stocksMap.get(id).getName());
+            values.put(IDSTOCKS, id);
+            values.put(NAMESTOCKS, stocksMap.get(id).getName());
             values.put(LOCATION, stocksMap.get(id).getLocation());
             values.put(POINTS, stocksMap.get(id).getPoints());
-            values.put(VARIATION, stocksMap.get(id).getVariation());
+            values.put(VARIATIONSTOCKS, stocksMap.get(id).getVariation());
             db.insert(TABELA_STOCKS, null, values);
         }
         db.close();
@@ -262,7 +284,7 @@ public class BDSQLiteHelper extends SQLiteOpenHelper {
     public int deleteStocks(String id) {
         SQLiteDatabase db = this.getWritableDatabase();
         int i = db.delete(TABELA_STOCKS, //tabela
-                ID +" = ?", // colunas para comparar
+                IDSTOCKS +" = ?", // colunas para comparar
                 new String[] { id });
         db.close();
         return i; // número de linhas excluídas
@@ -277,15 +299,15 @@ public class BDSQLiteHelper extends SQLiteOpenHelper {
     public int updateStocks(Stocks stocks) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(ID, stocks.getId());
-        values.put(NAME, stocks.getName());
+        values.put(IDSTOCKS, stocks.getId());
+        values.put(NAMESTOCKS, stocks.getName());
         values.put(LOCATION, stocks.getLocation());
         values.put(POINTS, stocks.getPoints());
-        values.put(VARIATION, stocks.getVariation());
+        values.put(VARIATIONSTOCKS, stocks.getVariation());
 
         int i = db.update(TABELA_STOCKS, //tabela
                 values, // valores
-                ID +" = ?", // colunas para comparar
+                IDSTOCKS +" = ?", // colunas para comparar
                 new String[] { stocks.getId() }); //parâmetros
         db.close();
         return i; // número de linhas modificadas
