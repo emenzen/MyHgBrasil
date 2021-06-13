@@ -528,12 +528,9 @@ public class BDSQLiteHelper extends SQLiteOpenHelper {
     private Geoip cursorToGeoips(Cursor cursor) {
         Geoip Geoip = new br.ucs.aula.myhgbrasil.model.Geoip();
         Geoip.setIdGeolocalizations(Integer.parseInt(cursor.getString(0)));
-        Geoip.setAddress(cursor.getString(1));
-        Geoip.setLatitude(Double.parseDouble(cursor.getString(2)));
-        Geoip.setLongitude(Double.parseDouble(cursor.getString(3)));
-//        Geoip.setCity(Double.parseDouble(cursor.getString(4)));
-//        Geoip.setSelicDaily(Double.parseDouble(cursor.getString(5)));
-//        Geoip.setCdiDaily(Double.parseDouble(cursor.getString(6)));
+        Geoip.setCountryName(cursor.getString(1));
+        Geoip.setRegionCode(cursor.getString(2));
+        Geoip.setCity(cursor.getString(3));
         return Geoip;
     }
 
