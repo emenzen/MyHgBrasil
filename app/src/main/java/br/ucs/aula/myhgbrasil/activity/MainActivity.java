@@ -24,6 +24,7 @@ import java.util.List;
 
 import br.ucs.aula.myhgbrasil.R;
 import br.ucs.aula.myhgbrasil.adapter.CurrenciesAdapter;
+import br.ucs.aula.myhgbrasil.adapter.GeoIPAdapter;
 import br.ucs.aula.myhgbrasil.adapter.StocksAdapter;
 import br.ucs.aula.myhgbrasil.adapter.TaxesAdapter;
 import br.ucs.aula.myhgbrasil.banco.BDSQLiteHelper;
@@ -47,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerViewTaxes;
     private RecyclerView recyclerViewStocks;
     private RecyclerView recyclerViewCurrencies;
+    private RecyclerView recyclerViewGeoip;
     private BDSQLiteHelper bd;
     private final static String API_KEY = "f9709a1b";
     private final static String API_ADDRESS = "remote";
@@ -105,13 +107,22 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerViewCurrencies = findViewById(R.id.lvCurrencies);
         LinearLayoutManager layoutManager3 = new LinearLayoutManager(this);
-        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        layoutManager3.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerViewCurrencies.setLayoutManager(layoutManager3);
         List<Currencies> currenciesList = new ArrayList<>();
         currenciesList = bd.getAllCurrencies();
         recyclerViewCurrencies.setAdapter(new CurrenciesAdapter(currenciesList, R.layout.list_currencies, getApplicationContext()));
 
-        if(true) {
+        recyclerViewGeoip = findViewById(R.id.lvGeoip);
+        LinearLayoutManager layoutManager4 = new LinearLayoutManager(this);
+        layoutManager4.setOrientation(LinearLayoutManager.HORIZONTAL);
+        recyclerViewGeoip.setLayoutManager(layoutManager4);
+        List<Geoip> geoipList = new ArrayList<>();
+        geoipList = bd.getAllGeoip();
+        recyclerViewGeoip.setAdapter(new GeoIPAdapter(geoipList, R.layout.list_geoip, getApplicationContext()));
+
+
+        if(false) {
             //Realiza a busca das taxas na API
             ApiInterface apiService =
                     ApiHgBrasil.getHgBrasil().create(ApiInterface.class);
@@ -143,6 +154,9 @@ public class MainActivity extends AppCompatActivity {
                 public void onResponse(Call<GeoipResponse> call, Response<GeoipResponse> response) {
                     int statusCode = response.code();
                     Geoip geoip = response.body().getResults();
+
+                    bd.deleteAllGeoips();
+                    bd.addGeoips(geoip);
                 }
 
                 @Override
