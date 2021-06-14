@@ -1,6 +1,7 @@
 package br.ucs.aula.myhgbrasil.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import br.ucs.aula.myhgbrasil.R;
+import br.ucs.aula.myhgbrasil.activity.EditarCurrenciesActivity;
 import br.ucs.aula.myhgbrasil.model.Currencies;
 
 public class CurrenciesAdapter extends RecyclerView.Adapter<CurrenciesAdapter.ViewHolder>{
@@ -80,12 +82,12 @@ public class CurrenciesAdapter extends RecyclerView.Adapter<CurrenciesAdapter.Vi
 
         public void onClick(View view) {
             AppCompatActivity appCompatActivity = new AppCompatActivity();
-            Toast.makeText(view.getContext(),"Você selecionou " + currenciesList.get(getLayoutPosition()).getId(),Toast.LENGTH_LONG).show();
+            //Toast.makeText(view.getContext(),"Você selecionou " + currenciesList.get(getLayoutPosition()).getId(),Toast.LENGTH_LONG).show();
 
             Context context = view.getContext();
-            //Intent intent = new Intent(context, EditarFotoActivity.class);
-            //intent.putExtra("CODIGO", elementos.get(getLayoutPosition()).getCodigo());
-            //context.startActivity(intent);
+            Intent intent = new Intent(context, EditarCurrenciesActivity.class);
+            intent.putExtra("ID", currenciesList.get(getLayoutPosition()).getId());
+            context.startActivity(intent);
 
         }
     }

@@ -47,19 +47,11 @@ public class BDSQLiteHelper extends SQLiteOpenHelper {
     private static final String[] COLUNAS3 = {ID, NAME, BUY, SELL, VARIATION};
 
     private static final String TABELA_GEOLOCALIZATIONS = "geolocalizations";
-    private static final String IDGEOLOCALIZATIONS = "idgeolocalizations";
-    private static final String ADDRESS = "address";
-    private static final String TYPE = "type";
-    private static final String CITY = "city";
-    private static final String REGION = "region";
+    private static final String IDGEOIP= "idgeoip";
     private static final String COUNTRY_NAME = "country_name";
-    private static final String CONTINENT = "continent";
-    private static final String CONTINENT_CODE = "continent_code";
     private static final String REGION_CODE = "region_code";
-    private static final String LATITUDE = "latitude";
-    private static final String LONGITUDE = "longitude";
-    private static final String WOEID = "woeid";
-    private static final String[] COLUNAS4 = {ADDRESS, TYPE, CITY, REGION, COUNTRY_NAME, CONTINENT, CONTINENT_CODE, REGION_CODE, LATITUDE, LONGITUDE, WOEID};
+    private static final String CITY = "city";
+    private static final String[] COLUNAS4 = {ID, COUNTRY_NAME, REGION_CODE, CITY};
 
     public BDSQLiteHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -70,42 +62,34 @@ public class BDSQLiteHelper extends SQLiteOpenHelper {
         String CREATE_TABLE = "CREATE TABLE taxes ("+
                 "idtaxes INTEGER PRIMARY KEY AUTOINCREMENT,"+
                 "date TEXT,"+
-                "cdi REAL,"+
-                "selic REAL,"+
-                "daily_factor REAL,"+
-                "selic_daily REAL,"+
-                "cdi_daily REAL)";
+                "cdi REAL DEFAULT 0.0,"+
+                "selic REAL DEFAULT 0.0,"+
+                "daily_factor REAL DEFAULT 0.0,"+
+                "selic_daily REAL DEFAULT 0.0,"+
+                "cdi_daily REAL DEFAULT 0.0)";
         db.execSQL(CREATE_TABLE);
 
         CREATE_TABLE = "CREATE TABLE stocks ("+
                 "idstocks TEXT,"+
                 "namestocks TEXT,"+
                 "location TEXT,"+
-                "points REAL,"+
-                "variationstocks REAL)";
+                "points REAL DEFAULT 0.0,"+
+                "variationstocks REAL DEFAULT 0.0)";
         db.execSQL(CREATE_TABLE);
 
         CREATE_TABLE = "CREATE TABLE currencies ("+
                 "id TEXT,"+
                 "name TEXT,"+
-                "buy REAL,"+
-                "sell REAL,"+
-                "variation REAL)";
+                "buy REAL DEFAULT 0.0,"+
+                "sell REAL DEFAULT 0.0,"+
+                "variation REAL DEFAULT 0.0)";
         db.execSQL(CREATE_TABLE);
 
         CREATE_TABLE = "CREATE TABLE geolocalizations ("+
-                "idgeolocalizations INTEGER PRIMARY KEY AUTOINCREMENT,"+
-                "address TEXT,"+
-                "type TEXT,"+
-                "city TEXT,"+
-                "region TEXT,"+
+                "idgeoip INTEGER PRIMARY KEY AUTOINCREMENT,"+
                 "country_name TEXT,"+
-                "continent TEXT," +
-                "continent_code TEXT," +
-                "region_code TEXT," +
-                "latitude REAL," +
-                "longitude REAL," +
-                "woeid INTEGER)";
+                "region_code TEXT,"+
+                "city TEXT)";
         db.execSQL(CREATE_TABLE);
     }
 
@@ -125,6 +109,25 @@ public class BDSQLiteHelper extends SQLiteOpenHelper {
     }
 
     // Taxes ################################################################
+    public Taxes getTaxes(int idTaxes) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABELA_TAXES, // a. tabela
+                COLUNAS, // b. colunas
+                " idtaxes = ?", // c. colunas para comparar
+                new String[] { String.valueOf(idTaxes) }, // d. parâmetros
+                null, // e. group by
+                null, // f. having
+                null, // g. order by
+                null); // h. limit
+        if (cursor == null) {
+            return null;
+        } else {
+            cursor.moveToFirst();
+            Taxes taxes = cursorToTaxes(cursor);
+            return taxes;
+        }
+    }
+
     public void addTaxes(Taxes taxes) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -212,25 +215,6 @@ public class BDSQLiteHelper extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
         }
         return TaxesList;
-    }
-
-    public Taxes getTaxes(int idTaxes) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABELA_TAXES, // a. tabela
-                COLUNAS, // b. colunas
-                " idtaxes = ?", // c. colunas para comparar
-                new String[] { String.valueOf(idTaxes) }, // d. parâmetros
-                null, // e. group by
-                null, // f. having
-                null, // g. order by
-                null); // h. limit
-        if (cursor == null) {
-            return null;
-        } else {
-            cursor.moveToFirst();
-            Taxes taxes = cursorToTaxes(cursor);
-            return taxes;
-        }
     }
 
     // Stocks ################################################################
@@ -342,6 +326,24 @@ public class BDSQLiteHelper extends SQLiteOpenHelper {
     }
 
     // Currencies ################################################################
+    public Currencies getCurrencies(String id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABELA_CURRENCIES, // a. tabela
+                COLUNAS3, // b. colunas
+                " id = ?", // c. colunas para comparar
+                new String[] { id }, // d. parâmetros
+                null, // e. group by
+                null, // f. having
+                null, // g. order by
+                null); // h. limit
+        if (cursor == null) {
+            return null;
+        } else {
+            cursor.moveToFirst();
+            Currencies currencies = cursorToCurrencies(cursor);
+            return currencies;
+        }
+    }
     public void addCurrencies(String id, Currencies currencies) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -356,9 +358,10 @@ public class BDSQLiteHelper extends SQLiteOpenHelper {
 
     public void addCurrencies(Map<String,?> currenciesMap) {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
+
 
         for(Map.Entry<String, ?> entry : currenciesMap.entrySet()){
+            ContentValues values = new ContentValues();
             values.put(ID,  entry.getKey());
 
             Map<String,Currencies> cur = (Map<String, Currencies>) entry.getValue();
@@ -443,86 +446,21 @@ public class BDSQLiteHelper extends SQLiteOpenHelper {
         db.close();
         return currenciesArrayList;
     }
-
     //GeoLocalizations ###############################################################
     public void addGeoips(Geoip geoip) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        //values.put(IDGEOLOCALIZATIONS, geoip.getIdGeolocalizations());
-        values.put(ADDRESS, geoip.getAddress());
-        values.put(CITY, geoip.getCity());
-        values.put(CONTINENT, geoip.getContinent());
-        values.put(CONTINENT_CODE, geoip.getContinentCode());
         values.put(COUNTRY_NAME, geoip.getCountryName());
-        values.put(REGION, geoip.getRegion());
         values.put(REGION_CODE, geoip.getRegionCode());
-        values.put(TYPE, geoip.getType());
-        values.put(LATITUDE, geoip.getLatitude());
-        values.put(LONGITUDE, geoip.getLongitude());
-        values.put(WOEID, geoip.getWoeid());
+        values.put(CITY, geoip.getCity());
         db.insert(TABELA_GEOLOCALIZATIONS, null, values);
         db.close();
-    }
-
-    public void addGeoips(List<Geoip> geoipList) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        for(int i=0; i<geoipList.size(); i++){
-            values.put(IDGEOLOCALIZATIONS, geoipList.get(i).getIdGeolocalizations());
-            values.put(ADDRESS,  geoipList.get(i).getAddress());
-            values.put(CITY,  geoipList.get(i).getCity());
-            values.put(CONTINENT,  geoipList.get(i).getContinent());
-            values.put(CONTINENT_CODE,  geoipList.get(i).getContinentCode());
-            values.put(COUNTRY_NAME,  geoipList.get(i).getCountryName());
-            values.put(REGION,  geoipList.get(i).getRegion());
-            values.put(REGION_CODE,  geoipList.get(i).getRegionCode());
-            values.put(TYPE,  geoipList.get(i).getType());
-            values.put(LATITUDE,  geoipList.get(i).getLatitude());
-            values.put(LONGITUDE,  geoipList.get(i).getLongitude());
-            values.put(WOEID,  geoipList.get(i).getWoeid());
-            db.insert(TABELA_GEOLOCALIZATIONS, null, values);
-        }
-        db.close();
-    }
-
-
-    public int deleteGeoips(Geoip geoip) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        int i = db.delete(TABELA_GEOLOCALIZATIONS, //tabela
-                IDGEOLOCALIZATIONS+" = ?", // colunas para comparar
-                new String[] { String.valueOf(geoip.getIdGeolocalizations()) });
-        db.close();
-        return i; // número de linhas excluídas
     }
 
     public void deleteAllGeoips() {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABELA_GEOLOCALIZATIONS,null,null);
         db.close();
-    }
-
-    public int updateGeoips(Geoip geoip) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(ADDRESS, geoip.getAddress());
-        values.put(CITY, geoip.getCity());
-        values.put(CONTINENT, geoip.getContinent());
-        values.put(CONTINENT_CODE, geoip.getContinentCode());
-        values.put(COUNTRY_NAME, geoip.getCountryName());
-        values.put(REGION, geoip.getRegion());
-        values.put(REGION_CODE, geoip.getRegionCode());
-        values.put(TYPE, geoip.getType());
-        values.put(LATITUDE, geoip.getLatitude());
-        values.put(LONGITUDE, geoip.getLongitude());
-        values.put(WOEID, geoip.getWoeid());
-
-        int i = db.update(TABELA_GEOLOCALIZATIONS, //tabela
-                values, // valores
-                IDTAXES+" = ?", // colunas para comparar
-                new String[] { String.valueOf(geoip.getIdGeolocalizations()) }
-        ); //parâmetros
-        db.close();
-        return i; // número de linhas modificadas
     }
 
     private Geoip cursorToGeoips(Cursor cursor) {
@@ -534,26 +472,12 @@ public class BDSQLiteHelper extends SQLiteOpenHelper {
         return Geoip;
     }
 
-    public ArrayList<Geoip> getAllGeoips() {
-        ArrayList<Geoip> GeoipsList = new ArrayList<br.ucs.aula.myhgbrasil.model.Geoip>();
-        String query = "SELECT * FROM " + TABELA_GEOLOCALIZATIONS;
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(query, null);
-        if (cursor.moveToFirst()) {
-            do {
-                Geoip geoips = cursorToGeoips(cursor);
-                GeoipsList.add(geoips);
-            } while (cursor.moveToNext());
-        }
-        return GeoipsList;
-    }
-
-    public Geoip getGeoip(int idGeoip) {
+    public Geoip getGeoip() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(TABELA_GEOLOCALIZATIONS, // a. tabela
-                COLUNAS, // b. colunas
-                " idtaxes = ?", // c. colunas para comparar
-                new String[] { String.valueOf(idGeoip) }, // d. parâmetros
+                COLUNAS4, // b. colunas
+                null,// c. colunas para comparar
+                null, // d. parâmetros
                 null, // e. group by
                 null, // f. having
                 null, // g. order by
@@ -565,6 +489,21 @@ public class BDSQLiteHelper extends SQLiteOpenHelper {
             Geoip geoip = cursorToGeoips(cursor);
             return geoip;
         }
+    }
+
+    public ArrayList<Geoip> getAllGeoip() {
+        ArrayList<Geoip> geoipArrayList = new ArrayList<Geoip>();
+        String query = "SELECT * FROM " + TABELA_GEOLOCALIZATIONS;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor.moveToFirst()) {
+            do {
+                Geoip geoip = cursorToGeoips(cursor);
+                geoipArrayList.add(geoip);
+            } while (cursor.moveToNext());
+        }
+        db.close();
+        return geoipArrayList;
     }
 
 }

@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import br.ucs.aula.myhgbrasil.R;
 import br.ucs.aula.myhgbrasil.banco.BDSQLiteHelper;
-import br.ucs.aula.myhgbrasil.model.Taxes;
+import br.ucs.aula.myhgbrasil.model.Currencies;
 
 public class EditarCurrenciesActivity extends AppCompatActivity {
 
@@ -25,43 +25,37 @@ public class EditarCurrenciesActivity extends AppCompatActivity {
         Intent intent = getIntent();
         final String idCurrencies = intent.getStringExtra("ID");
         bd = new BDSQLiteHelper(this);
-        /*Taxes taxes = bd.getTaxes(idCurrencies);
-        final EditText date = (EditText) findViewById(R.id.etDate);
-        final EditText cdi = (EditText) findViewById(R.id.etCdi);
-        final EditText selic = (EditText) findViewById(R.id.etSelic);
-        final EditText dailyFactor = (EditText) findViewById(R.id.etDaily_factor);
-        final EditText cdiDaily = (EditText) findViewById(R.id.etCdi_daily);
-        final EditText selicDaily = (EditText) findViewById(R.id.etSelic_daily);
+        Currencies currencies = bd.getCurrencies(idCurrencies);
+        final EditText codigo = (EditText) findViewById(R.id.etCurrenciesCod);
+        final EditText name = (EditText) findViewById(R.id.etCurrenciesName);
+        final EditText buy = (EditText) findViewById(R.id.etCurrenciesBuy);
+        final EditText sell = (EditText) findViewById(R.id.etCurrenciesSell);
+        final EditText variation = (EditText) findViewById(R.id.etCurrenciesVariation);
 
-        date.setText(taxes.getDate());
-        cdi.setText(String.valueOf(taxes.getCdi()));
-        selic.setText(String.valueOf(taxes.getSelic()));
-        dailyFactor.setText(String.valueOf(taxes.getDailyFactor()));
-        cdiDaily.setText(String.valueOf(taxes.getCdiDaily()));
-        selicDaily.setText(String.valueOf(taxes.getSelicDaily()));
+        codigo.setText(currencies.getId());
+        name.setText(currencies.getName());
+        buy.setText(String.valueOf(currencies.getBuy()));
+        sell.setText(String.valueOf(currencies.getSell()));
+        variation.setText(String.valueOf(currencies.getVariation()));
 
-
-
-        final Button alterar = (Button) findViewById(R.id.btnAlterar);
+        final Button alterar = (Button) findViewById(R.id.btnAlterarCurrencies);
         alterar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Taxes taxes = new Taxes();
-                taxes.setIdTaxes(idCurrencies);
-                taxes.setDate(date.getText().toString());
-                taxes.setCdi(Double.parseDouble(cdi.getText().toString()));
-                taxes.setSelic(Double.parseDouble(selic.getText().toString()));
-                taxes.setCdiDaily(Double.parseDouble(cdiDaily.getText().toString()));
-                taxes.setSelicDaily(Double.parseDouble(selicDaily.getText().toString()));
-                taxes.setDailyFactor(Double.parseDouble(dailyFactor.getText().toString()));
+                Currencies currencies = new Currencies();
+                currencies.setId(idCurrencies);
+                currencies.setName(name.getText().toString());
+                currencies.setBuy(Double.parseDouble(buy.getText().toString()));
+                currencies.setSell(Double.parseDouble(sell.getText().toString()));
+                currencies.setVariation(Double.parseDouble(variation.getText().toString()));
 
-                bd.updateTaxes(taxes);
+                bd.updateCurrencies(currencies);
                 Intent intent = new Intent(EditarCurrenciesActivity.this, MainActivity.class);
                 startActivity(intent);
             }
         });
 
-        final Button remover = (Button) findViewById(R.id.btnRemover);
+        final Button remover = (Button) findViewById(R.id.btnRemoverCurrencies);
         remover.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -73,9 +67,7 @@ public class EditarCurrenciesActivity extends AppCompatActivity {
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                Taxes taxes = new Taxes();
-                                taxes.setIdTaxes(idCurrencies);
-                                bd.deleteTaxes(taxes);
+                                bd.deleteCurrencies(idCurrencies);
                                 Intent intent = new Intent(EditarCurrenciesActivity.this, MainActivity.class);
                                 startActivity(intent);
                             }
@@ -83,9 +75,5 @@ public class EditarCurrenciesActivity extends AppCompatActivity {
                         .setNegativeButton(android.R.string.no, null).show();
             }
         });
-
-
-
-         */
     }
 }

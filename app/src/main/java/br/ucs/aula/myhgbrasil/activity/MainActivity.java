@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
         currenciesList = bd.getAllCurrencies();
         recyclerViewCurrencies.setAdapter(new CurrenciesAdapter(currenciesList, R.layout.list_currencies, getApplicationContext()));
 
-        if(false) {
+        if(true) {
             //Realiza a busca das taxas na API
             ApiInterface apiService =
                     ApiHgBrasil.getHgBrasil().create(ApiInterface.class);

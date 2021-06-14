@@ -37,7 +37,7 @@ public class GeoIPAdapter extends RecyclerView.Adapter<GeoIPAdapter.ViewHolder> 
     @NonNull
     @Override
     public GeoIPAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.activity_main,viewGroup,false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_geoip,viewGroup,false);
         return new GeoIPAdapter.ViewHolder(view);
     }
 
@@ -58,7 +58,7 @@ public class GeoIPAdapter extends RecyclerView.Adapter<GeoIPAdapter.ViewHolder> 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
-            textViewGeoip = itemView.findViewById(R.id.textViewGeoip);
+            textViewGeoip = itemView.findViewById(R.id.txtGeoip);
         }
 
         private void setData(Geoip geoip) {
