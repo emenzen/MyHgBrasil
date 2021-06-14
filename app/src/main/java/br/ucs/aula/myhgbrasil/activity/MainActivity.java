@@ -1,8 +1,12 @@
 package br.ucs.aula.myhgbrasil.activity;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -86,6 +90,21 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        final Button apiButton = (Button) findViewById(R.id.apiButton);
+        apiButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!isOnline()){
+                    bd.deleteAllCurrencies();
+                    bd.deleteAllGeoips();
+                    bd.deleteAllStocks();
+                    bd.deleteAllTaxes();
+                }else
+                {
+                    fillWithAPIData();
+                }
+            }
+        });
 
         recyclerViewTaxes = findViewById(R.id.lvTaxes);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -121,75 +140,72 @@ public class MainActivity extends AppCompatActivity {
         geoipList = bd.getAllGeoip();
         recyclerViewGeoip.setAdapter(new GeoIPAdapter(geoipList, R.layout.list_geoip, getApplicationContext()));
 
-
-        if(false) {
-            //Realiza a busca das taxas na API
-            ApiInterface apiService =
-                    ApiHgBrasil.getHgBrasil().create(ApiInterface.class);
-
-            Call<TaxesResponse> call = apiService.getTaxes(API_KEY);
-            call.enqueue(new Callback<TaxesResponse>() {
-                @Override
-                public void onResponse(Call<TaxesResponse> call, Response<TaxesResponse> response) {
-                    int statusCode = response.code();
-                    List<Taxes> taxesList = response.body().getResults();
-
-                    bd.deleteAllTaxes();
-                    bd.addTaxes(taxesList);
-
-                }
-
-                @Override
-                public void onFailure(Call<TaxesResponse> call, Throwable t) {
-                    // Log error here since request failed
-                    Log.e(TAG, t.toString());
-                }
-            });
-
-            //Buscar a localização....
-            final Geoip geoip = new Geoip();
-            Call<GeoipResponse> call1 = apiService.getGeoip(API_KEY, API_ADDRESS);
-            call1.enqueue(new Callback<GeoipResponse>() {
-                @Override
-                public void onResponse(Call<GeoipResponse> call, Response<GeoipResponse> response) {
-                    int statusCode = response.code();
-                    Geoip geoip = response.body().getResults();
-
-                    bd.deleteAllGeoips();
-                    bd.addGeoips(geoip);
-                }
-
-                @Override
-                public void onFailure(Call<GeoipResponse> call, Throwable t) {
-                    Log.e(TAG, t.toString());
-                }
-            });
-            //Buscar a Quotações....
-            final Quotations quotations = new Quotations();
-            Call<QuotationsResponse> call2 = apiService.getQuotations(API_KEY);
-            call2.enqueue(new Callback<QuotationsResponse>() {
-                @Override
-                public void onResponse(Call<QuotationsResponse> call, Response<QuotationsResponse> response) {
-                    int statusCode = response.code();
-                    Quotations quotations = response.body().getResults();
-
-                    bd.deleteAllStocks();
-                    bd.addStocks(quotations.getStocks());
-
-                    bd.deleteAllCurrencies();
-                    quotations.getCurrencies().remove("source");
-                    bd.addCurrencies(quotations.getCurrencies());
-
-
-                }
-
-                @Override
-                public void onFailure(Call<QuotationsResponse> call, Throwable t) {
-                    Log.e(TAG, t.toString());
-                }
-            });
-        }
-
+//        if(false){
+//            ApiInterface apiService =
+//                    ApiHgBrasil.getHgBrasil().create(ApiInterface.class);
+//
+//            Call<TaxesResponse> call = apiService.getTaxes(API_KEY);
+//            call.enqueue(new Callback<TaxesResponse>() {
+//                @Override
+//                public void onResponse(Call<TaxesResponse> call, Response<TaxesResponse> response) {
+//                    int statusCode = response.code();
+//                    List<Taxes> taxesList = response.body().getResults();
+//
+//                    bd.deleteAllTaxes();
+//                    bd.addTaxes(taxesList);
+//
+//                }
+//
+//                @Override
+//                public void onFailure(Call<TaxesResponse> call, Throwable t) {
+//                    // Log error here since request failed
+//                    Log.e(TAG, t.toString());
+//                }
+//            });
+//
+//            //Buscar a localização....
+//            final Geoip geoip = new Geoip();
+//            Call<GeoipResponse> call1 = apiService.getGeoip(API_KEY, API_ADDRESS);
+//            call1.enqueue(new Callback<GeoipResponse>() {
+//                @Override
+//                public void onResponse(Call<GeoipResponse> call, Response<GeoipResponse> response) {
+//                    int statusCode = response.code();
+//                    Geoip geoip = response.body().getResults();
+//
+//                    bd.deleteAllGeoips();
+//                    bd.addGeoips(geoip);
+//                }
+//
+//                @Override
+//                public void onFailure(Call<GeoipResponse> call, Throwable t) {
+//                    Log.e(TAG, t.toString());
+//                }
+//            });
+//            //Buscar a Quotações....
+//            final Quotations quotations = new Quotations();
+//            Call<QuotationsResponse> call2 = apiService.getQuotations(API_KEY);
+//            call2.enqueue(new Callback<QuotationsResponse>() {
+//                @Override
+//                public void onResponse(Call<QuotationsResponse> call, Response<QuotationsResponse> response) {
+//                    int statusCode = response.code();
+//                    Quotations quotations = response.body().getResults();
+//
+//                    bd.deleteAllStocks();
+//                    bd.addStocks(quotations.getStocks());
+//
+//                    bd.deleteAllCurrencies();
+//                    quotations.getCurrencies().remove("source");
+//                    bd.addCurrencies(quotations.getCurrencies());
+//
+//
+//                }
+//
+//                @Override
+//                public void onFailure(Call<QuotationsResponse> call, Throwable t) {
+//                    Log.e(TAG, t.toString());
+//                }
+//            });
+//        }
 
 
 
@@ -203,6 +219,81 @@ public class MainActivity extends AppCompatActivity {
 
         Toast.makeText(this,"Mostrando dados do banco local",Toast.LENGTH_LONG).show();
 
+    }
+
+    public boolean isOnline() {
+        ConnectivityManager connMgr = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        return (networkInfo != null && networkInfo.isConnected());
+    }
+
+    public void fillWithAPIData(){
+        //Realiza a busca das taxas na API
+        ApiInterface apiService =
+                ApiHgBrasil.getHgBrasil().create(ApiInterface.class);
+
+        Call<TaxesResponse> call = apiService.getTaxes(API_KEY);
+        call.enqueue(new Callback<TaxesResponse>() {
+            @Override
+            public void onResponse(Call<TaxesResponse> call, Response<TaxesResponse> response) {
+                int statusCode = response.code();
+                List<Taxes> taxesList = response.body().getResults();
+
+                bd.deleteAllTaxes();
+                bd.addTaxes(taxesList);
+
+            }
+
+            @Override
+            public void onFailure(Call<TaxesResponse> call, Throwable t) {
+                // Log error here since request failed
+                Log.e(TAG, t.toString());
+            }
+        });
+
+        //Buscar a localização....
+        final Geoip geoip = new Geoip();
+        Call<GeoipResponse> call1 = apiService.getGeoip(API_KEY, API_ADDRESS);
+        call1.enqueue(new Callback<GeoipResponse>() {
+            @Override
+            public void onResponse(Call<GeoipResponse> call, Response<GeoipResponse> response) {
+                int statusCode = response.code();
+                Geoip geoip = response.body().getResults();
+
+                bd.deleteAllGeoips();
+                bd.addGeoips(geoip);
+            }
+
+            @Override
+            public void onFailure(Call<GeoipResponse> call, Throwable t) {
+                Log.e(TAG, t.toString());
+            }
+        });
+        //Buscar a Quotações....
+        final Quotations quotations = new Quotations();
+        Call<QuotationsResponse> call2 = apiService.getQuotations(API_KEY);
+        call2.enqueue(new Callback<QuotationsResponse>() {
+            @Override
+            public void onResponse(Call<QuotationsResponse> call, Response<QuotationsResponse> response) {
+                int statusCode = response.code();
+                Quotations quotations = response.body().getResults();
+
+                bd.deleteAllStocks();
+                bd.addStocks(quotations.getStocks());
+
+                bd.deleteAllCurrencies();
+                quotations.getCurrencies().remove("source");
+                bd.addCurrencies(quotations.getCurrencies());
+
+
+            }
+
+            @Override
+            public void onFailure(Call<QuotationsResponse> call, Throwable t) {
+                Log.e(TAG, t.toString());
+            }
+        });
     }
 
 }

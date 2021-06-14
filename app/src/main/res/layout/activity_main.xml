@@ -6,6 +6,12 @@
     android:orientation="vertical"
     tools:context=".activity.MainActivity">
 
+    <Button
+        android:id="@+id/apiButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="APi Consultar" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/lvGeoip"
         android:layout_width="match_parent"
