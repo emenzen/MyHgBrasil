@@ -54,7 +54,7 @@ public class GeoIPAdapter extends RecyclerView.Adapter<GeoIPAdapter.ViewHolder>{
         }
 
         private void setData(Geoip geoip) {
-            txGeoip.setText(geoip.getCity()+"-"+geoip.getRegionCode()+","+geoip.getCountryName());
+            txGeoip.setText(geoip.getCity()+"-"+geoip.getRegionCode()+", "+geoip.getCountryName());
         }
 
         public void onClick(View view) {

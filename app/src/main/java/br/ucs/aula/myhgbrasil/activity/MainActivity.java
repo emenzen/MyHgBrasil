@@ -94,14 +94,11 @@ public class MainActivity extends AppCompatActivity {
         apiButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!isOnline()){
-                    bd.deleteAllCurrencies();
-                    bd.deleteAllGeoips();
-                    bd.deleteAllStocks();
-                    bd.deleteAllTaxes();
+                if(isOnline()){
+                    fillWithAPIData(v);
                 }else
                 {
-                    fillWithAPIData();
+                    Toast.makeText(v.getContext(),"Não foi possível atualizar os dados, verifique a conexão de rede!",Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -140,83 +137,6 @@ public class MainActivity extends AppCompatActivity {
         geoipList = bd.getAllGeoip();
         recyclerViewGeoip.setAdapter(new GeoIPAdapter(geoipList, R.layout.list_geoip, getApplicationContext()));
 
-//        if(false){
-//            ApiInterface apiService =
-//                    ApiHgBrasil.getHgBrasil().create(ApiInterface.class);
-//
-//            Call<TaxesResponse> call = apiService.getTaxes(API_KEY);
-//            call.enqueue(new Callback<TaxesResponse>() {
-//                @Override
-//                public void onResponse(Call<TaxesResponse> call, Response<TaxesResponse> response) {
-//                    int statusCode = response.code();
-//                    List<Taxes> taxesList = response.body().getResults();
-//
-//                    bd.deleteAllTaxes();
-//                    bd.addTaxes(taxesList);
-//
-//                }
-//
-//                @Override
-//                public void onFailure(Call<TaxesResponse> call, Throwable t) {
-//                    // Log error here since request failed
-//                    Log.e(TAG, t.toString());
-//                }
-//            });
-//
-//            //Buscar a localização....
-//            final Geoip geoip = new Geoip();
-//            Call<GeoipResponse> call1 = apiService.getGeoip(API_KEY, API_ADDRESS);
-//            call1.enqueue(new Callback<GeoipResponse>() {
-//                @Override
-//                public void onResponse(Call<GeoipResponse> call, Response<GeoipResponse> response) {
-//                    int statusCode = response.code();
-//                    Geoip geoip = response.body().getResults();
-//
-//                    bd.deleteAllGeoips();
-//                    bd.addGeoips(geoip);
-//                }
-//
-//                @Override
-//                public void onFailure(Call<GeoipResponse> call, Throwable t) {
-//                    Log.e(TAG, t.toString());
-//                }
-//            });
-//            //Buscar a Quotações....
-//            final Quotations quotations = new Quotations();
-//            Call<QuotationsResponse> call2 = apiService.getQuotations(API_KEY);
-//            call2.enqueue(new Callback<QuotationsResponse>() {
-//                @Override
-//                public void onResponse(Call<QuotationsResponse> call, Response<QuotationsResponse> response) {
-//                    int statusCode = response.code();
-//                    Quotations quotations = response.body().getResults();
-//
-//                    bd.deleteAllStocks();
-//                    bd.addStocks(quotations.getStocks());
-//
-//                    bd.deleteAllCurrencies();
-//                    quotations.getCurrencies().remove("source");
-//                    bd.addCurrencies(quotations.getCurrencies());
-//
-//
-//                }
-//
-//                @Override
-//                public void onFailure(Call<QuotationsResponse> call, Throwable t) {
-//                    Log.e(TAG, t.toString());
-//                }
-//            });
-//        }
-
-
-
-        //List<Taxes> taxesL = new ArrayList<>();
-        //taxesList.add(new Taxes("02-05-2021",2.0,3.0,4.0,5.6,6.9));
-        //TaxesAdapter adapter = new TaxesAdapter(taxesList);
-        //recyclerView.setAdapter(adapter);
-        //taxesL = bd.getAllTaxes();
-        //recyclerView.setAdapter(new TaxesAdapter(taxesL, R.layout.list_taxes, getApplicationContext()));
-        //adapter.notifyDataSetChanged();
-
         Toast.makeText(this,"Mostrando dados do banco local",Toast.LENGTH_LONG).show();
 
     }
@@ -228,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
         return (networkInfo != null && networkInfo.isConnected());
     }
 
-    public void fillWithAPIData(){
+    public void fillWithAPIData(View v){
         //Realiza a busca das taxas na API
         ApiInterface apiService =
                 ApiHgBrasil.getHgBrasil().create(ApiInterface.class);
@@ -238,8 +158,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<TaxesResponse> call, Response<TaxesResponse> response) {
                 int statusCode = response.code();
-                List<Taxes> taxesList = response.body().getResults();
 
+                List<Taxes> taxesList = response.body().getResults();
                 bd.deleteAllTaxes();
                 bd.addTaxes(taxesList);
 
@@ -294,6 +214,14 @@ public class MainActivity extends AppCompatActivity {
                 Log.e(TAG, t.toString());
             }
         });
+
+        Toast.makeText(v.getContext(),"Dados atualizados com sucesso",Toast.LENGTH_LONG).show();
+
+        //Context context = this.getContext();
+        Intent intent = new Intent(this, MainActivity.class);
+        this.startActivity(intent);
+
+
     }
 
 }
